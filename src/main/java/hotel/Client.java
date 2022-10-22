@@ -1,6 +1,6 @@
 package hotel;
 
-public class Client implements IClient {
+public class Client {
 	private String name;
 	private String firstname;
 	private String telNumber;
