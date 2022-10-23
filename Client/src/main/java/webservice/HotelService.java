@@ -32,30 +32,6 @@ public interface HotelService {
      */
     @WebMethod
     @WebResult(targetNamespace = "")
-    @RequestWrapper(localName = "toString", targetNamespace = "http://service/", className = "webservice.ToString")
-    @ResponseWrapper(localName = "toStringResponse", targetNamespace = "http://service/", className = "webservice.ToStringResponse")
-    @Action(input = "http://service/HotelService/toStringRequest", output = "http://service/HotelService/toStringResponse")
-    public String toString();
-
-    /**
-     * 
-     * @return
-     *     returns webservice.Hotel
-     */
-    @WebMethod
-    @WebResult(targetNamespace = "")
-    @RequestWrapper(localName = "getHotel", targetNamespace = "http://service/", className = "webservice.GetHotel")
-    @ResponseWrapper(localName = "getHotelResponse", targetNamespace = "http://service/", className = "webservice.GetHotelResponse")
-    @Action(input = "http://service/HotelService/getHotelRequest", output = "http://service/HotelService/getHotelResponse")
-    public Hotel getHotel();
-
-    /**
-     * 
-     * @return
-     *     returns java.lang.String
-     */
-    @WebMethod
-    @WebResult(targetNamespace = "")
     @RequestWrapper(localName = "roomsToString", targetNamespace = "http://service/", className = "webservice.RoomsToString")
     @ResponseWrapper(localName = "roomsToStringResponse", targetNamespace = "http://service/", className = "webservice.RoomsToStringResponse")
     @Action(input = "http://service/HotelService/roomsToStringRequest", output = "http://service/HotelService/roomsToStringResponse")
@@ -84,9 +60,9 @@ public interface HotelService {
         @WebParam(name = "arg2", targetNamespace = "")
         int arg2,
         @WebParam(name = "arg3", targetNamespace = "")
-        java.time.LocalDate arg3,
+        String arg3,
         @WebParam(name = "arg4", targetNamespace = "")
-        java.time.LocalDate arg4);
+        String arg4);
 
     /**
      * 
@@ -99,5 +75,29 @@ public interface HotelService {
     public void addReservation(
         @WebParam(name = "arg0", targetNamespace = "")
         Reservation arg0);
+
+    /**
+     * 
+     * @return
+     *     returns webservice.Hotel
+     */
+    @WebMethod
+    @WebResult(targetNamespace = "")
+    @RequestWrapper(localName = "getHotel", targetNamespace = "http://service/", className = "webservice.GetHotel")
+    @ResponseWrapper(localName = "getHotelResponse", targetNamespace = "http://service/", className = "webservice.GetHotelResponse")
+    @Action(input = "http://service/HotelService/getHotelRequest", output = "http://service/HotelService/getHotelResponse")
+    public Hotel getHotel();
+
+    /**
+     * 
+     * @return
+     *     returns java.lang.String
+     */
+    @WebMethod
+    @WebResult(targetNamespace = "")
+    @RequestWrapper(localName = "toString", targetNamespace = "http://service/", className = "webservice.ToString")
+    @ResponseWrapper(localName = "toStringResponse", targetNamespace = "http://service/", className = "webservice.ToStringResponse")
+    @Action(input = "http://service/HotelService/toStringRequest", output = "http://service/HotelService/toStringResponse")
+    public String toString();
 
 }

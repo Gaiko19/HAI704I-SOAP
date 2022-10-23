@@ -19,8 +19,8 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="arg0" type="{http://www.w3.org/2001/XMLSchema}float"/&gt;
  *         &lt;element name="arg1" type="{http://www.w3.org/2001/XMLSchema}float"/&gt;
  *         &lt;element name="arg2" type="{http://www.w3.org/2001/XMLSchema}int"/&gt;
- *         &lt;element name="arg3" type="{http://service/}localDate" minOccurs="0"/&gt;
- *         &lt;element name="arg4" type="{http://service/}localDate" minOccurs="0"/&gt;
+ *         &lt;element name="arg3" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="arg4" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
  *       &lt;/sequence&gt;
  *     &lt;/restriction&gt;
  *   &lt;/complexContent&gt;
@@ -42,8 +42,8 @@ public class SearchRoom {
     protected float arg0;
     protected float arg1;
     protected int arg2;
-    protected LocalDate arg3;
-    protected LocalDate arg4;
+    protected String arg3;
+    protected String arg4;
 
     /**
      * Gets the value of the arg0 property.
@@ -98,10 +98,10 @@ public class SearchRoom {
      * 
      * @return
      *     possible object is
-     *     {@link LocalDate }
+     *     {@link String }
      *     
      */
-    public LocalDate getArg3() {
+    public String getArg3() {
         return arg3;
     }
 
@@ -110,10 +110,10 @@ public class SearchRoom {
      * 
      * @param value
      *     allowed object is
-     *     {@link LocalDate }
+     *     {@link String }
      *     
      */
-    public void setArg3(LocalDate value) {
+    public void setArg3(String value) {
         this.arg3 = value;
     }
 
@@ -122,10 +122,10 @@ public class SearchRoom {
      * 
      * @return
      *     possible object is
-     *     {@link LocalDate }
+     *     {@link String }
      *     
      */
-    public LocalDate getArg4() {
+    public String getArg4() {
         return arg4;
     }
 
@@ -134,10 +134,10 @@ public class SearchRoom {
      * 
      * @param value
      *     allowed object is
-     *     {@link LocalDate }
+     *     {@link String }
      *     
      */
-    public void setArg4(LocalDate value) {
+    public void setArg4(String value) {
         this.arg4 = value;
     }
 

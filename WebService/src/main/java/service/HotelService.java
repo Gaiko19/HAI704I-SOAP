@@ -1,6 +1,5 @@
 package service;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 
 import javax.jws.WebMethod;
@@ -20,7 +19,7 @@ public interface HotelService {
 	String toString();
 	
 	@WebMethod
-	ArrayList<Room> searchRoom(float priceMin, float priceMax, int size, LocalDate in, LocalDate out);
+	ArrayList<Room> searchRoom(float priceMin, float priceMax, int size, String in, String out);
 	
 	@WebMethod
 	void addReservation(Reservation resa);

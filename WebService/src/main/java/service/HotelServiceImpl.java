@@ -1,6 +1,5 @@
 package service;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 
 import javax.jws.WebService;
@@ -28,7 +27,7 @@ public class HotelServiceImpl implements HotelService {
 	}
 
 	@Override
-	public ArrayList<Room> searchRoom(float priceMin, float priceMax, int size, LocalDate in, LocalDate out) {
+	public ArrayList<Room> searchRoom(float priceMin, float priceMax, int size, String in, String out) {
 		return repo.searchRoom(priceMin, priceMax, size, in, out);
 	}
 

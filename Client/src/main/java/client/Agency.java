@@ -1,15 +1,13 @@
 package client;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import model.Reservation;
+import webservice.Client;
 import webservice.Hotel;
 import webservice.HotelService;
-import webservice.HotelServiceImplService;
 import webservice.Room;
 
 
@@ -61,15 +59,8 @@ public class Agency {
 		System.exit(0);
 	}
 	
-	public Hotel searchHotel(LocalDate in, LocalDate out, int size, float priceMin, float priceMax, String location) {
+	public Hotel searchRoom(HotelService proxy, String in, String out, int size, float priceMin, float priceMax, String location) {
 		Hotel hotel = new Hotel();
-		HotelService proxy= null;
-		try {
-			proxy = new HotelServiceImplService(new URL("http://localhost:8080/hotel?wsdl")).getHotelServiceImplPort();
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		}
-
 		List<Room> rooms = proxy.searchRoom(priceMin, priceMax, size, in, out);
 		hotel = proxy.getHotel();
 		hotel.getRooms().addAll(rooms);
@@ -86,6 +77,13 @@ public class Agency {
 			  }
 		}
 		return access;
+	}
+	
+	public String makeReservation(HotelService proxy, Hotel hotel, Room room, String in, String out, Client client) {
+		LocalDate inD = LocalDate.parse(in);
+		LocalDate outD = LocalDate.parse(out);
+		Reservation resa = new Reservation(client, inD, outD, room);
+		proxy.addReservation(null);
 	}
 	
 

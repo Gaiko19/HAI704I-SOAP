@@ -26,6 +26,8 @@ public class HotelRepositoryImpl implements HotelRepository {
 		this.hotel.setStars(1);
 		this.hotel.setAddress(pos);
 		this.hotel.setRooms(rooms);
+		
+		hotel.setResa(new ArrayList<Reservation>());
 	}
 	
 	@Override
@@ -43,7 +45,9 @@ public class HotelRepositoryImpl implements HotelRepository {
 	}
 	
 	@Override
-	public ArrayList<Room> searchRoom(float priceMin, float priceMax, int size, LocalDate in, LocalDate out) {
+	public ArrayList<Room> searchRoom(float priceMin, float priceMax, int size, String inS, String outS) {
+		LocalDate in = LocalDate.parse(inS);
+		LocalDate out = LocalDate.parse(outS);
 		ArrayList<Room> results = new ArrayList<>();
 		for (int index = 0; index < this.hotel.getRooms().size(); index++) {
 			Room room = this.hotel.getRooms().get(index);

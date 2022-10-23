@@ -3,10 +3,9 @@ package client;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-import hotel.Client;
-import hotel.Hotel;
-import hotel.Reservation;
-import hotel.Room;
+import webservice.*;
+
+
 
 public class Finder {
 	
