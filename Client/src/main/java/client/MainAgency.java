@@ -5,6 +5,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import webservice.Client;
 import webservice.Hotel;
 import webservice.HotelService;
 import webservice.HotelServiceImplService;
@@ -15,14 +16,19 @@ public class MainAgency {
 		
 		boolean debug = true;
 		Agency agency = new Agency();
-		HotelService proxy = null;
+		HotelService ritz = null;
+		HotelService ibis = null;		
 		try {
-			proxy = new HotelServiceImplService(new URL("http://localhost:8080/hotel?wsdl")).getHotelServiceImplPort();
+			ritz = new HotelServiceImplService(new URL("http://localhost:8080/ritz?wsdl")).getHotelServiceImplPort();
+			ibis = new HotelServiceImplService(new URL("http://localhost:8080/ibis?wsdl")).getHotelServiceImplPort();
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
-			System.err.println("Error while retrieving hotel's info");
+			System.err.println("Error while retrieving hotels's info");
 			System.exit(1);
 		}
+		agency.getOffers().put(ibis, (double) 10);
+		agency.getOffers().put(ritz, (double) 5);
+		Client c = new Client("Dubois", "Arnaud", "0658547018", 34);
 		Scanner scanner = new Scanner(System.in);
 		if(!debug) {
 			String username = "";
@@ -63,11 +69,11 @@ public class MainAgency {
 			int priceMax = 150;
 			System.out.println("Looking for the best offers...\n");
 			ArrayList<Hotel> hotels = new ArrayList<Hotel>();
-			Hotel results = agency.searchRoom(proxy, in, out, size, priceMin, priceMax, location);
+			Hotel results = agency.searchRoom(ritz, in, out, size, priceMin, priceMax, location);
 			hotels.add(results);
 			results.getName();
 			for(Hotel h : hotels) {
-				System.out.println(h.getName() + " " + h.getStars() + "\n" + h.getRooms().toString());
+				System.out.println(h.getName() + " " + h.getStars() + "\n" + h.getRooms().get(0).toString());
 			}
 			break;
 		

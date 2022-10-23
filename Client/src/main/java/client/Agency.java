@@ -79,11 +79,11 @@ public class Agency {
 		return access;
 	}
 	
-	public String makeReservation(HotelService proxy, Hotel hotel, Room room, String in, String out, Client client) {
+	public String makeReservation(HotelService proxy, Room room, String in, String out, Client client) {
 		LocalDate inD = LocalDate.parse(in);
 		LocalDate outD = LocalDate.parse(out);
 		Reservation resa = new Reservation(client, inD, outD, room);
-		proxy.addReservation(null);
+		proxy.addReservation(resa);
 	}
 	
 
