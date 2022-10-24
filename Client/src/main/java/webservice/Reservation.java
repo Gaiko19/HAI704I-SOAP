@@ -1,6 +1,8 @@
 
 package webservice;
 
+import java.time.LocalDate;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
@@ -164,5 +166,18 @@ public class Reservation {
     public void setRoom(Room value) {
         this.room = value;
     }
+    
+	public Reservation(Client client, LocalDate in, LocalDate out, Room room) {
+		this.client = client;
+		this.in = in;
+		this.out = out;
+		this.cc = client.getCc();
+		this.room = room;
+	}
+	@Override
+	public String toString() {
+		return "Reservation : " + client.infoToString() + "room n°" + room.getRoomNumber() + "\n"+
+				"From " + in + " to " + out + "\n";
+	}
 
 }

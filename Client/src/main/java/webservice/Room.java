@@ -105,5 +105,10 @@ public class Room {
     public void setSize(int value) {
         this.size = value;
     }
+    
+	@Override
+	public String toString() {
+		return "Room n°" + roomNumber + " [" + size + "] " + price + "€\n";			
+	}
 
 }

@@ -6,6 +6,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
 
+
+
 /**
  * <p>Java class for client complex type.
  * 
@@ -156,5 +158,47 @@ public class Client {
     public void setTelNumber(String value) {
         this.telNumber = value;
     }
+    
+	public void addMoney(double amount) {
+		this.cc.addMoney(amount);
+	}
+
+	public void subMoney(double amount) {
+		this.cc.subMoney(amount);
+	}
+
+	@Override
+	public String toString() {
+		return name + " " + firstname + "\n" + age + "\n" + telNumber+ "\n" + "CC: " 
+				+ this.getCc().cardToString();
+	}
+	
+	public String infoToString() {
+		return name + " " + firstname + "\n";
+	}
+	
+	public Client(String name, String firstname, String telNumber, int age, CreditCard cc) {
+		this.name = name;
+		this.firstname = firstname;
+		this.telNumber = telNumber;
+		this.age = age;
+		this.cc = cc;
+	}
+
+	public Client(String name, String firstname, String telNumber, int age) {
+		this.name = name;
+		this.firstname = firstname;
+		this.telNumber = telNumber;
+		this.age = age;
+		this.cc = new CreditCard();
+	}
+
+	public Client() {
+		this.name = "XXX";
+		this.firstname = "XXXX";
+		this.telNumber = "0000000000";
+		this.age = 0;
+		this.cc = null;
+	}
 
 }

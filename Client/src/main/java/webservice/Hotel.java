@@ -151,7 +151,7 @@ public class Hotel {
      */
     public List<Room> getRooms() {
         if (rooms == null) {
-            rooms = new ArrayList<Room>();
+            rooms = new ArrayList<>();
         }
         return this.rooms;
     }
@@ -171,5 +171,18 @@ public class Hotel {
     public void setStars(double value) {
         this.stars = value;
     }
+    
+	@Override
+	public String toString() {
+		return "Hotel "+ this.getName() +"\n Rating : " + this.getStars() + "\n" + this.getAddress().toString() + "\n" + roomsToString();
+	}
+	
+	public String roomsToString() {
+		String res = "";
+		for (Room room : this.getRooms()) {
+			res += room.toString();
+		}
+		return res;
+	}
 
 }

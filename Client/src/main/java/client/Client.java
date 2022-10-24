@@ -49,13 +49,13 @@ public class Client {
 		this.age = age;
 	}
 
-	public void addMoney(double amount) {
+	/*public void addMoney(double amount) {
 		this.cc.addMoney(amount);
 	}
 
 	public void subMoney(double amount) {
 		this.cc.subMoney(amount);
-	}
+	}*/
 
 	public Client(String name, String firstname, String telNumber, int age, CreditCard cc) {
 		this.name = name;

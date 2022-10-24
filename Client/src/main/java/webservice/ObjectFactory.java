@@ -1,6 +1,8 @@
 
 package webservice;
 
+import java.time.LocalDate;
+
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlElementDecl;
 import javax.xml.bind.annotation.XmlRegistry;
@@ -126,9 +128,9 @@ public class ObjectFactory {
      * Create an instance of {@link Reservation }
      * 
      */
-    public Reservation createReservation() {
+    /*public Reservation createReservation() {
         return new Reservation();
-    }
+    }*/
 
     /**
      * Create an instance of {@link CreditCard }
@@ -142,9 +144,9 @@ public class ObjectFactory {
      * Create an instance of {@link LocalDate }
      * 
      */
-    public LocalDate createLocalDate() {
+    /*public LocalDate createLocalDate() {
         return new LocalDate();
-    }
+    }*/
 
     /**
      * Create an instance of {@link Client }

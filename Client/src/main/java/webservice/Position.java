@@ -183,5 +183,14 @@ public class Position {
     public void setStreet(String value) {
         this.street = value;
     }
+    
+	@Override
+	public String toString() {
+		String str = "Position : " + number + ", " + street + ", " + city + ", " + country + "\n";			
+		if(gps == null || !gps.equals("None")) {
+			str += "GPS : "+ gps;
+		}
+		return str;
+	}
 
 }

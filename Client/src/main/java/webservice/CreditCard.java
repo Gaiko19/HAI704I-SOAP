@@ -1,9 +1,13 @@
 
 package webservice;
 
+import java.time.LocalDate;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
+
+
 
 
 /**
@@ -156,5 +160,57 @@ public class CreditCard {
     public void setNumber(String value) {
         this.number = value;
     }
+    
+	public void addMoney(double amount) {
+		this.amount += amount;
+	}
+	
+	public void subMoney(double amount) {
+		this.amount -= amount;
+	}
+
+	@Override
+	public String toString() {
+		return "Credit card -\nClient - " + this.name.infoToString() + 
+				this.number + " " + this.cvv + " " + this.expiration + "\n" +
+				"Balance : " + this.amount;
+	}
+	
+	public String cardToString() {
+		return this.number + " " + this.cvv + " " + this.expiration + "\n" +
+				"Balance : " + this.amount + "€";
+	}
+	
+	public CreditCard() {
+		this.name = new Client();
+		this.number = "0000 0000 0000 0000";
+		this.expiration = LocalDate.parse("2035-01-01");
+		this.amount = 0;
+	}
+	
+	public CreditCard(Client client, String number, String cvv, LocalDate expiration) {
+		this.name = client;
+		this.number = number;
+		this.cvv = cvv;
+		this.expiration = expiration;
+		this.amount = 0;
+	}
+	
+
+	public CreditCard(Client client, String number, String cvv, LocalDate expiration, double amount) {
+		this.name = client;
+		this.number = number;
+		this.cvv = cvv;
+		this.expiration = expiration;
+		this.amount = amount;
+	}
+	
+	public CreditCard(String number, String cvv, LocalDate expiration, double amount) {
+		this.name = null;
+		this.number = number;
+		this.cvv = cvv;
+		this.expiration = expiration;
+		this.amount = amount;
+	}
 
 }

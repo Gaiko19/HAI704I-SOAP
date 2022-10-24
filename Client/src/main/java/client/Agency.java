@@ -4,10 +4,11 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 
-import model.Reservation;
+
 import webservice.Client;
 import webservice.Hotel;
 import webservice.HotelService;
+import webservice.Reservation;
 import webservice.Room;
 
 
@@ -59,10 +60,10 @@ public class Agency {
 		System.exit(0);
 	}
 	
-	public Hotel searchRoom(HotelService proxy, String in, String out, int size, float priceMin, float priceMax, String location) {
-		Hotel hotel = new Hotel();
+	public Hotel searchRoom(HotelService proxy, String in, String out, int size, float priceMin, float priceMax) {
+		Hotel hotel = proxy.getHotel();
+		hotel.getRooms().clear(); 
 		List<Room> rooms = proxy.searchRoom(priceMin, priceMax, size, in, out);
-		hotel = proxy.getHotel();
 		hotel.getRooms().addAll(rooms);
 
 		return hotel;
@@ -79,12 +80,13 @@ public class Agency {
 		return access;
 	}
 	
-	public String makeReservation(HotelService proxy, Room room, String in, String out, Client client) {
+	/*public String makeReservation(HotelService proxy, Room room, String in, String out, Client client) {
 		LocalDate inD = LocalDate.parse(in);
 		LocalDate outD = LocalDate.parse(out);
 		Reservation resa = new Reservation(client, inD, outD, room);
 		proxy.addReservation(resa);
-	}
+		return "Reservation bien effectuée";
+	}*/
 	
 
 }
