@@ -6,22 +6,25 @@ import java.util.List;
 import webservice.Hotel;
 import webservice.HotelService;
 import webservice.Room;
+import webservice.Client;
 
 
 
 public class Agency {
 	private String agencyName;
-	private HashMap<String, String> clientInfos;
+	private HashMap<Client, String[]> clientInfos;
 	private HashMap<HotelService, Double> offers;
 	
 	public Agency() {
 		this.agencyName = "Hotel name";
-		this.clientInfos = new HashMap<String, String>();
-		clientInfos.put("admin", "root");
+		this.clientInfos = new HashMap<Client, String[]>();
+		Client admin = new Client("admin", "admin", "0", 0);
+		String[] login = {"root", "root"};
+		clientInfos.put(admin, login);
 		this.offers = new HashMap<HotelService, Double>();
 	}
 
-	public Agency(String name, HashMap<String, String> clientInfos, HashMap<HotelService, Double> offers) {
+	public Agency(String name, HashMap<Client, String[]> clientInfos, HashMap<HotelService, Double> offers) {
 		this.agencyName = name;
 		this.clientInfos = clientInfos;
 		this.offers = offers;
@@ -35,11 +38,11 @@ public class Agency {
 		this.agencyName = agencyName;
 	}
 
-	public HashMap<String, String> getClientInfos() {
+	public HashMap<Client, String[]> getClientInfos() {
 		return clientInfos;
 	}
 
-	public void setClientInfos(HashMap<String, String> clientInfos) {
+	public void setClientInfos(HashMap<Client, String[]> clientInfos) {
 		this.clientInfos = clientInfos;
 	}
 
@@ -65,15 +68,15 @@ public class Agency {
 		return hotel;
 	}
 	
-	public boolean connectClient(String username, String pwd) {
-		boolean access = false;
-		for (String i : this.clientInfos.keySet()) {
-			  if(username.equals(i) && this.clientInfos.get(i).equals(pwd)) {
-				  access = true;
+	public Client connectClient(String username, String pwd) {
+		Client clt = null;
+		for (Client i : this.clientInfos.keySet()) {
+			  if(username.equals(clientInfos.get(i)[0]) && this.clientInfos.get(i)[1].equals(pwd)) {
+				  clt = i;
 				  break;
 			  }
 		}
-		return access;
+		return clt;
 	}
 	
 	/*public String makeReservation(HotelService proxy, Room room, String in, String out, Client client) {
