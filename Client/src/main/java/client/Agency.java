@@ -1,14 +1,10 @@
 package client;
 
-import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 
-
-import webservice.Client;
 import webservice.Hotel;
 import webservice.HotelService;
-import webservice.Reservation;
 import webservice.Room;
 
 

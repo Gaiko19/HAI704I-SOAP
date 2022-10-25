@@ -2,6 +2,7 @@ package client;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -69,6 +70,20 @@ public class MainAgency {
 		
 		boolean debug = true;
 		Agency agency = new Agency();
+//		String dburl = "jdbc:mysql:/sql110.epizy.com/epiz_32861716_hotelfinderdb";
+//		String user = "epiz_32861716";
+//		String dbpwd = "ehIiqX6cItun";
+//		try {
+//			Class.forName("com.mysql.cj.jdbc.Driver");
+//			Connection connect = DriverManager.getConnection(dburl,user,dbpwd);
+//			Statement statement = connect.createStatement();
+//			ResultSet result= statement.executeQuery("select * from Client");
+//			while(result.next()) {
+//				System.out.println(result.getInt(1));
+//			}
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
 		HashMap<String, HotelService> proxy = new HashMap<>();
 		
 		try {
@@ -114,20 +129,21 @@ public class MainAgency {
 		
 		switch (choice) {
 		case 1:
+			scanner.nextLine(); 
 			System.out.println("Where do you want to go ?\n");
-			String location = "France";
+			String location = scanner.nextLine();
 			System.out.println("When would you like to go ? (yyyy-MM-dd))\n");
-			String in = "2022-10-20";
+			String in = scanner.nextLine();
 			System.out.println("When would you like to leave ? (yyyy-MM-dd))\n");
-			String out = "2022-10-25";
+			String out = scanner.nextLine();
 			System.out.println("How many people will be with you ?\n");
-			int size = 1;
+			int size = scanner.nextInt();
 			System.out.println("Select your range of price\n Price min : ");
-			int priceMin = 0;
+			int priceMin = scanner.nextInt();
 			System.out.println("Price max : ");
-			int priceMax = 150;
+			int priceMax = scanner.nextInt();
 			System.out.println("Minimum of rating: ");
-			double rating = 3;			
+			double rating = scanner.nextInt();
 			System.out.println("Looking for the best offers...\n");
 			
 			ArrayList<Hotel> hotels = research(agency, proxy, location, size, in, out, priceMin, priceMax, rating);
