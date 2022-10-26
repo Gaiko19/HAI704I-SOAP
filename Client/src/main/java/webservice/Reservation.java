@@ -87,7 +87,7 @@ public class Reservation {
      * Sets the value of the client property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed object is 
      *     {@link Client }
      *     
      */
