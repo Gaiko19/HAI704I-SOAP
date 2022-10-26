@@ -108,7 +108,7 @@ public class Room {
     
 	@Override
 	public String toString() {
-		return "Room n°" + roomNumber + " [" + size + "] " + price + "€\n";			
+		return "Room n°" + roomNumber + " [" + size + " persons] " + price + "€";
 	}
 
 }

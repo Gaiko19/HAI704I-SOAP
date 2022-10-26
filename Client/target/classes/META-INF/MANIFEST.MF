@@ -1,5 +1,9 @@
 Manifest-Version: 1.0
+<<<<<<< HEAD
 Built-By: arnau
+=======
+Built-By: macbook
+>>>>>>> 6a2b5984b8cfbaf79af69ebdf4a87373a768233b
 Build-Jdk: 17.0.4.1
 Created-By: Maven Integration for Eclipse
 

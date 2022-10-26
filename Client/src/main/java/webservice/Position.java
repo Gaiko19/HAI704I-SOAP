@@ -186,11 +186,7 @@ public class Position {
     
 	@Override
 	public String toString() {
-		String str = "Position : " + number + ", " + street + ", " + city + ", " + country + "\n";			
-		if(gps == null || !gps.equals("None")) {
-			str += "GPS : "+ gps;
-		}
-		return str;
+		return "Position : " + number + ", " + street + ", " + city + ", " + country + "\n";
 	}
 
 }

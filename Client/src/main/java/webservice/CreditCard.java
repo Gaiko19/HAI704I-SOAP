@@ -184,6 +184,7 @@ public class CreditCard {
 	public CreditCard() {
 		this.name = new Client();
 		this.number = "0000 0000 0000 0000";
+		this.cvv = "000";
 		this.expiration = LocalDate.parse("2035-01-01");
 		this.amount = 0;
 	}

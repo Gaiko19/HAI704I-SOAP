@@ -78,7 +78,7 @@ public class Client {
 		this.firstname = "XXXX";
 		this.telNumber = "0000000000";
 		this.age = 0;
-		this.cc = null;
+		this.cc = new CreditCard();
 	}
 
 	@Override
