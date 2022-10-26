@@ -1,9 +1,11 @@
 package client;
 
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
+
 
 import webservice.Client;
 
@@ -29,20 +31,21 @@ public class MainAgency {
 				System.exit(1);
 
 		}
-//		String dburl = "jdbc:mysql:/sql110.epizy.com/epiz_32861716_hotelfinderdb";
-//		String user = "epiz_32861716";
-//		String dbpwd = "ehIiqX6cItun";
-//		try {
-//			Class.forName("com.mysql.cj.jdbc.Driver");
-//			Connection connect = DriverManager.getConnection(dburl,user,dbpwd);
-//			Statement statement = connect.createStatement();
-//			ResultSet result= statement.executeQuery("select * from Client");
-//			while(result.next()) {
-//				System.out.println(result.getInt(1));
-//			}
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
+
+		try{  
+			Class.forName("com.mysql.jdbc.Driver");  
+			Connection con=DriverManager.getConnection(  
+			"jdbc:mysql://sql110.epizy.com/epiz_32861716_hotelfinderdb","epiz_32861716","ehIiqX6cItun");  
+			Statement stmt=con.createStatement();  
+			ResultSet rs=stmt.executeQuery("select * from 'Client';");  
+			while(rs.next())  
+				System.out.println(rs.getInt("ID"));  
+			con.close();  
+		}
+		catch(Exception e){ 
+			System.out.println(e);
+		}  
+		  
 		
 		Client client = null;
 		if(!debug) {
@@ -56,6 +59,7 @@ public class MainAgency {
 		
 		
 		System.out.println("Welcome to "+ agency.getAgencyName() +" !");
+		System.out.println("logged as "+ client.getFirstname()+" "+client.getName());
 		
 		int choice = -1;
 		while(choice != 3) {
