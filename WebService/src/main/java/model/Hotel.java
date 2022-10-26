@@ -1,5 +1,6 @@
 package model;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 
@@ -68,4 +69,17 @@ public class Hotel {
 		this.address = new Position();
 		this.resa = new ArrayList<Reservation>();
 	}
+	
+
+    public Reservation searchResa(Client client, LocalDate inDate) {
+        if (resa == null) {
+            System.out.println("Aucune réservation trouvée dans cet Hotel\n");
+        }
+        for(Reservation res : resa) {
+        	if(res.getClient().equals(client) && res.getIn().equals(inDate)) {
+        		return res;
+        	}
+        }
+		return null;
+    }
 }

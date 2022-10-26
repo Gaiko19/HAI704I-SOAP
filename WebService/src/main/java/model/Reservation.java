@@ -54,6 +54,8 @@ public class Reservation {
 		return "Reservation : " + client.infoToString() + "room n°" + room.getRoomNumber() + "\n"+
 				"From " + in + " to " + out + "\n";
 	}
+	
+
 
 
 }

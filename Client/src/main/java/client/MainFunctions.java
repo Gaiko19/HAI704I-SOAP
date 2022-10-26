@@ -2,6 +2,7 @@ package client;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -147,7 +148,7 @@ public class MainFunctions {
 				}
 				else {
 					System.out.println("Room number : ");
-					roomChoice = scanner.nextInt() - 1;					
+					roomChoice = scanner.nextInt();					
 				}
 			}
 			LocalDate ind = LocalDate.parse(in) ;
@@ -170,6 +171,8 @@ public class MainFunctions {
 				if(!results.getRooms().isEmpty()) {
 					for (Room room : results.getRooms()) {
 						room.setPrice(room.getPrice() - (room.getPrice() / 100 ) * agency.getOffers().get(hotel));
+						double value =Double.parseDouble(new DecimalFormat("##.##").format(room.getPrice()));
+						room.setPrice(value);
 					}
 					hotels.add(results);						
 				}
@@ -195,7 +198,8 @@ public class MainFunctions {
 							client.subMoney(price);
 							resa = new Reservation(client, in, out, room);
 							hotel.getResa().add(resa);
-							System.out.println("Your order have been placed. Thank you for your purchase !");
+							System.out.println("Your order have been placed. Thank you for your purchase !\n");
+							getRecipe(hotel, client, resa);
 					}
 					else {
 						System.err.println("Please verify your account balance.");
@@ -213,7 +217,8 @@ public class MainFunctions {
 				LocalDate exp = LocalDate.parse(scanner.nextLine());
 				resa = new Reservation(client, in, out, room);
 				hotel.getResa().add(resa);
-				System.out.println("Your order have been placed. Thank you for your purchase !");
+				System.out.println("Your order have been placed. Thank you for your purchase !\n");
+				getRecipe(hotel, client, resa);
 				
 			}
 		}
@@ -221,6 +226,24 @@ public class MainFunctions {
 
 	public static void viewAll(Agency agency, Client client) {
 		System.out.println("Not yet working. Please try again in the next days.");
+	}
+	
+	public static void getRecipe(Hotel hotel, Client client, Reservation resa) {
+		int size = 31;  
+		System.out.println(Reservation.formRecipe(size, "Client Infos"));
+		System.out.println("|                             |");
+		System.out.println(Reservation.adaptiveDisplay("info", client.getFirstname(), size));
+		System.out.println(Reservation.adaptiveDisplay("info", client.getName(), size));
+		System.out.println(Reservation.adaptiveDisplay("info", client.getTelNumber(), size));
+		System.out.println("|                             |");
+		System.out.println(Reservation.formRecipe(size, "Reservation Infos"));
+		System.out.println("|                             |");
+		System.out.println(Reservation.adaptiveDisplay("hotelName", hotel.getName(), size));
+		System.out.println(Reservation.adaptiveDisplay("room", String.valueOf(resa.getRoom().getRoomNumber()), size));
+		System.out.println(Reservation.adaptiveDisplay("datein", String.valueOf(resa.getIn()), size));
+		System.out.println(Reservation.adaptiveDisplay("dateout", String.valueOf(resa.getOut()), size));
+		System.out.println(Reservation.adaptiveDisplay("price", String.valueOf(resa.getRoom().getPrice())+"€", size));
+		System.out.println(Reservation.formRecipe(size, "footer"));
 	}
 
 }

@@ -32,19 +32,19 @@ public class MainAgency {
 
 		}
 
-		try{  
-			Class.forName("com.mysql.jdbc.Driver");  
-			Connection con=DriverManager.getConnection(  
-			"jdbc:mysql://sql110.epizy.com/epiz_32861716_hotelfinderdb","epiz_32861716","ehIiqX6cItun");  
-			Statement stmt=con.createStatement();  
-			ResultSet rs=stmt.executeQuery("select * from 'Client';");  
-			while(rs.next())  
-				System.out.println(rs.getInt("ID"));  
-			con.close();  
-		}
-		catch(Exception e){ 
-			System.out.println(e);
-		}  
+//		try{  
+//			Class.forName("com.mysql.jdbc.Driver");  
+//			Connection con=DriverManager.getConnection(  
+//			"jdbc:mysql://sql110.epizy.com/epiz_32861716_hotelfinderdb","epiz_32861716","ehIiqX6cItun");  
+//			Statement stmt=con.createStatement();  
+//			ResultSet rs=stmt.executeQuery("select * from 'Client';");  
+//			while(rs.next())  
+//				System.out.println(rs.getInt("ID"));  
+//			con.close();  
+//		}
+//		catch(Exception e){ 
+//			System.out.println(e);
+//		}  
 		  
 		
 		Client client = null;
