@@ -1,6 +1,7 @@
 
 package webservice;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -125,6 +126,18 @@ public class Hotel {
             resa = new ArrayList<Reservation>();
         }
         return this.resa;
+    }
+    
+    public Reservation searchResa(Client client, LocalDate inDate) {
+        if (resa == null) {
+            System.out.println("Aucune réservation trouvée dans cet Hotel\n");
+        }
+        for(Reservation res : resa) {
+        	if(res.getClient().equals(client) && res.getIn().equals(inDate)) {
+        		return res;
+        	}
+        }
+		return null;
     }
 
     /**

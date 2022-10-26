@@ -29,7 +29,6 @@ public class MainAgency {
 			pwd = scanner.nextLine();
 			access = agency.connectClient(username, pwd);
 		}
-		
 		System.out.println("Welcome to TripFinder !");
 		System.out.println("1. Find a hotel \n2. View all available offers \n3. Make a reservation\n");
 		int choice = scanner.nextInt();

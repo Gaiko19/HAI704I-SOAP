@@ -15,7 +15,5 @@ public class HotelPublisher {
 		Endpoint.publish("http://localhost:8080/ritz", new HotelServiceImpl(ritz));
 		Endpoint.publish("http://localhost:8080/ibis", new HotelServiceImpl(ibis));
 		System.err.println("Server ready!");
-
 	}
-
 }

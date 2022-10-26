@@ -166,13 +166,14 @@ public class MainAgency {
 				try {
 					Reservation resa = makeReservation(c, ind, outd, hotels.get(hotelChoice).getRooms().get(roomChoice), hotels);
 					hotels.get(hotelChoice).getResa().add(resa);
-					System.out.println("Your order have been placed\n Thank you for your purchase.");
+					System.out.println("Your order have been placed\n Thank you for your purchase.\n");
+					resa.getRecipe();
+					System.out.println(hotels.get(hotelChoice).searchResa(c, ind));
 				} catch (ReservationException e) {
 					e.printStackTrace();
 				}
 				
-				
-				System.out.println(hotels.get(hotelChoice).getResa());
+				//System.out.println(hotels.get(hotelChoice).getResa());
 				
 			}
 			else {
