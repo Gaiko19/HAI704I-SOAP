@@ -14,11 +14,11 @@ import model.Position;
 import model.Reservation;
 import model.Room;
 
-public class RitzRepositoryImpl implements HotelRepository {
+public class F1TlsUnRepositoryImpl implements HotelRepository {
 
 	private Hotel hotel = new Hotel();
 	
-	public RitzRepositoryImpl() {
+	public F1TlsUnRepositoryImpl() {
 				
 		String name="";
 		float rating = 0;
@@ -32,7 +32,7 @@ public class RitzRepositoryImpl implements HotelRepository {
 			Connection con=DriverManager.getConnection(
 			"jdbc:mysql://dakota.o2switch.net:3306/sc1samo7154_hotelfinderdb","sc1samo7154_hotelfinder","hotelfinderdb");
 			Statement stmt=con.createStatement();
-			ResultSet rs=stmt.executeQuery("select * from Hotel where id=7");
+			ResultSet rs=stmt.executeQuery("select * from Hotel where id=3");
 			if(rs.next()) {
 				name = rs.getString("Name");
 				rating = rs.getFloat("Rating"); 

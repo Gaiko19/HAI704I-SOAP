@@ -1,39 +1,80 @@
 package repository;
 
+import java.sql.Array;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
 import model.Hotel;
 import model.Position;
 import model.Reservation;
 import model.Room;
 
-public class Formule1RepositoryImpl implements HotelRepository {
+public class CrowneRepositoryImpl implements HotelRepository {
 
 	private Hotel hotel = new Hotel();
 	
-	public Formule1RepositoryImpl() {
+	public CrowneRepositoryImpl() {
+				
+		String name="";
+		float rating = 0;
+		int pos = 0;
+		int id = 0;
+		Position adress = new Position();
 		ArrayList<Room> rooms = new ArrayList<>();
-		Room room1 = new Room(1, true, 20.3, 2);
-		Room room2 = new Room(2, true, 20.3, 2);
-		Room room3 = new Room(3, true, 20, 2);
-		Room room4 = new Room(4, true, 21.0, 2);
-		Room room5 = new Room(5, true, 25, 3);
-
-		
-		rooms.add(room1);
-		rooms.add(room2);
-		rooms.add(room3);
-		rooms.add(room4);
-		rooms.add(room5);
+		ArrayList<Integer> roomIds = new ArrayList<>();
+		try{  
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con=DriverManager.getConnection(
+			"jdbc:mysql://dakota.o2switch.net:3306/sc1samo7154_hotelfinderdb","sc1samo7154_hotelfinder","hotelfinderdb");
+			Statement stmt=con.createStatement();
+			ResultSet rs=stmt.executeQuery("select * from Hotel where id=5");
+			if(rs.next()) {
+				name = rs.getString("Name");
+				rating = rs.getFloat("Rating"); 
+				pos= rs.getInt("Adress");
+				id = rs.getInt("ID");
+			}
+			rs = stmt.executeQuery("select * from Position where id="+ pos);
+			if(rs.next()) {
+				adress.setCity(rs.getString("City"));
+				adress.setCountry(rs.getString("Country"));
+				adress.setStreet(rs.getString("Street"));
+				adress.setNumber(rs.getInt("Number"));
+			}
+			rs = stmt.executeQuery("select Room from ListeRooms where Hotel="+ id);
+			while(rs.next()) {
+				roomIds.add(rs.getInt(1));
+			}
+			for(int i = 0; i < roomIds.size(); i++) {
+				int roomID = roomIds.get(i);
+				rs = stmt.executeQuery("select * from Room where ID="+ roomID);
+				if(rs.next()) {
+					Room room = new Room();
+					room.setRoomNumber(rs.getInt("Number"));
+					room.setPrice(rs.getFloat("Price"));
+					room.setSize(rs.getInt("Size"));
+					rooms.add(room);
+				}
+			}
+			
+			con.close();
+		}
+		catch(Exception e){
+			System.out.println(e);
+		}
 
 		this.hotel = new Hotel(
-				"Formule 1",
-				2.5,
+				name,
+				rating,
 				rooms,
-				new Position("Toulouse", "France", "Rue du Concorde", 23));
+				adress);
 		
-		hotel.setResa(new ArrayList<>());
+		hotel.setResa(new ArrayList<Reservation>());
 	}
 	
 	@Override
@@ -68,6 +109,7 @@ public class Formule1RepositoryImpl implements HotelRepository {
 							|| ((in.isBefore(res.getIn()) && out.isAfter(res.getOut())))
 							|| (in.isAfter(res.getIn()) && out.isBefore(res.getOut()))) {
 							isOkay = false;
+							continue;
 						}
 					}
 				}

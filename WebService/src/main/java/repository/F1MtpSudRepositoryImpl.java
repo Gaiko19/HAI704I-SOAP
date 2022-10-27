@@ -1,25 +1,22 @@
 package repository;
 
-import java.sql.Array;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.List;
 
 import model.Hotel;
 import model.Position;
 import model.Reservation;
 import model.Room;
 
-public class RitzRepositoryImpl implements HotelRepository {
+public class F1MtpSudRepositoryImpl implements HotelRepository {
 
 	private Hotel hotel = new Hotel();
 	
-	public RitzRepositoryImpl() {
-				
+	public F1MtpSudRepositoryImpl() {
 		String name="";
 		float rating = 0;
 		int pos = 0;
@@ -32,7 +29,7 @@ public class RitzRepositoryImpl implements HotelRepository {
 			Connection con=DriverManager.getConnection(
 			"jdbc:mysql://dakota.o2switch.net:3306/sc1samo7154_hotelfinderdb","sc1samo7154_hotelfinder","hotelfinderdb");
 			Statement stmt=con.createStatement();
-			ResultSet rs=stmt.executeQuery("select * from Hotel where id=7");
+			ResultSet rs=stmt.executeQuery("select * from Hotel where id=6");
 			if(rs.next()) {
 				name = rs.getString("Name");
 				rating = rs.getFloat("Rating"); 
@@ -67,7 +64,7 @@ public class RitzRepositoryImpl implements HotelRepository {
 		catch(Exception e){
 			System.out.println(e);
 		}
-
+		
 		this.hotel = new Hotel(
 				name,
 				rating,
@@ -109,7 +106,6 @@ public class RitzRepositoryImpl implements HotelRepository {
 							|| ((in.isBefore(res.getIn()) && out.isAfter(res.getOut())))
 							|| (in.isAfter(res.getIn()) && out.isBefore(res.getOut()))) {
 							isOkay = false;
-							continue;
 						}
 					}
 				}

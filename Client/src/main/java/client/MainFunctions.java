@@ -2,8 +2,13 @@ package client;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
@@ -14,6 +19,7 @@ import webservice.Client;
 import webservice.Hotel;
 import webservice.HotelService;
 import webservice.HotelServiceImplService;
+import webservice.Position;
 import webservice.Reservation;
 import webservice.Room;
 import webservice.CreditCard;
@@ -22,58 +28,245 @@ public class MainFunctions {
 	public static Agency HotelAdvisor() {
 		HashMap<HotelService, Double> offers = new HashMap<>();
 		HashMap<Client, String[]> clients = new HashMap<>();
-		try {
-			HotelService ritz = new HotelServiceImplService(new URL("http://localhost:8080/ritz?wsdl")).getHotelServiceImplPort();
-			HotelService ibis = new HotelServiceImplService(new URL("http://localhost:8080/ibis?wsdl")).getHotelServiceImplPort();
-			offers.put(ritz, (double) 10);
-			offers.put(ibis, (double) 5);
-			Client c1 = new Client("Dubois", "Arnaud", "0658547018", 34);
-			Client c2 = new Client("Chad", "Jérémie", "0658547018", 25);
-			Client admin = new Client("admin", "admin", "0", 0);
-			CreditCard cb1 = new CreditCard(admin, "0", "0", LocalDate.parse("2022-10-20"),1000);
-			admin.setCc(cb1);
-			String[] log1 = {"ArnaudCs","dub123"};
-			String[] log2 = {"GigaChad","gomuscu24"};
-			String[] log3 = {"admin","admin"};
-			clients.put(admin, log3);
-			clients.put(c1, log1);
-			clients.put(c2, log2);
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-			System.err.println("Error while retrieving hotels's info");
-			System.exit(1);
+		String name = "";
+		try {  
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con=DriverManager.getConnection(
+			"jdbc:mysql://dakota.o2switch.net:3306/sc1samo7154_hotelfinderdb","sc1samo7154_hotelfinder","hotelfinderdb");
+			Statement stmt=con.createStatement();
+			ResultSet rs=stmt.executeQuery("select * from Agency where id=1");
+			if(rs.next()) {
+				name = rs.getString("Name");
+			}
+			rs=stmt.executeQuery("select * from ListePartners where Agency=1");
+			HashMap<Integer, Float> partners = new HashMap<Integer, Float>();
+			while(rs.next()) {
+				partners.put(rs.getInt("Hotel"), rs.getFloat("Amount"));
+			}
+			for(int i : partners.keySet()) {
+				switch (i) {
+					case 2 :
+						offers.put(new HotelServiceImplService(new URL("http://localhost:8080/f1tlsram?wsdl")).getHotelServiceImplPort(), (double)partners.get(i));
+						break;
+					case 3 :
+						offers.put(new HotelServiceImplService(new URL("http://localhost:8080/f1tlsun?wsdl")).getHotelServiceImplPort(), (double)partners.get(i));
+						break;
+					case 4 :
+						offers.put(new HotelServiceImplService(new URL("http://localhost:8080/kyriad?wsdl")).getHotelServiceImplPort(), (double)partners.get(i));
+						break;
+					case 5 :
+						offers.put(new HotelServiceImplService(new URL("http://localhost:8080/crowne?wsdl")).getHotelServiceImplPort(), (double)partners.get(i));
+						break;
+					case 6 :
+						offers.put(new HotelServiceImplService(new URL("http://localhost:8080/f1mtpsud?wsdl")).getHotelServiceImplPort(), (double)partners.get(i));
+						break;
+					case 7 :
+						offers.put(new HotelServiceImplService(new URL("http://localhost:8080/ritz?wsdl")).getHotelServiceImplPort(), (double)partners.get(i));
+						break;
+				}
+			}
+			rs=stmt.executeQuery("select * from ListeClients where Agency=1");
+			ArrayList<Integer> listeClients = new ArrayList<>();
+			while(rs.next()) {
+				listeClients.add(rs.getInt("Client"));
+			}
+			for(int i = 0; i < listeClients.size(); i++) {
+				int id = listeClients.get(i);
+				Client clt = new Client();
+				int cc = 0;
+				
+				rs = stmt.executeQuery("select * from CreditCard where id="+ cc);
+				CreditCard card = new CreditCard();
+				if(rs.next()) {
+					card.setNumber(rs.getString("Number"));
+					card.setCvv(rs.getString("CVV"));
+					card.setExpiration(rs.getDate("Expiration").toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+					card.setAmount(rs.getFloat("Amount"));
+					card.setName(clt);
+					
+				}
+				clt.setCc(card);
+				
+				rs=stmt.executeQuery("select * from Client where ID="+id);
+				if(rs.next()) {
+					clt.setName(rs.getString("Name"));
+					clt.setFirstname(rs.getString("Firstname"));
+					clt.setAge(rs.getInt("Age"));
+					clt.setTelNumber(rs.getString("Tel"));
+					cc = rs.getInt("CreditCard");
+					String[] cred = {rs.getString("Login"),rs.getString("Password")};
+					clients.put(clt, cred);					
+				}
+			}
 		}
-		return new Agency("HotelAdvisor", clients, offers);
+		catch (Exception e) {
+			System.err.println(e);
+		}
+		
+		return new Agency(name, clients, offers);
 	}
 	
 	public static Agency HoteldotNet() {
-		Agency agency = null;
-		try {
-			HashMap<HotelService, Double> offers = new HashMap<>();
-			HashMap<Client, String[]> clients = new HashMap<>();
-			HotelService ritz = new HotelServiceImplService(new URL("http://localhost:8080/ritz?wsdl")).getHotelServiceImplPort();
-			HotelService formule1 = new HotelServiceImplService(new URL("http://localhost:8080/formule1?wsdl")).getHotelServiceImplPort();
-			offers.put(ritz, (double) 10);
-			offers.put(formule1, (double) 2);
-			Client c1 = new Client("Dubois", "Arnaud", "0658547018", 34);
-			Client c2 = new Client("Gatien", "Haddad", "0658547018", 25);
-			Client admin = new Client("admin", "admin", "0", 0);
-			CreditCard cb1 = new CreditCard(admin, "0", "0", LocalDate.parse("2022-10-20"),1000);
-			admin.setCc(cb1);
-			String[] log1 = {"ArnaudCs","dub123"};
-			String[] log2 = {"Leogendra","linkisnotzelda"};
-			String[] log3 = {"admin","admin"};
-			clients.put(admin, log3);
-			clients.put(c1, log1);
-			clients.put(c2, log2);
-			agency = new Agency("HotelAdvisor", clients, offers);
-			
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-			System.err.println("Error while retrieving hotels's info");
-			System.exit(1);
+		HashMap<HotelService, Double> offers = new HashMap<>();
+		HashMap<Client, String[]> clients = new HashMap<>();
+		String name = "";
+		try {  
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con=DriverManager.getConnection(
+			"jdbc:mysql://dakota.o2switch.net:3306/sc1samo7154_hotelfinderdb","sc1samo7154_hotelfinder","hotelfinderdb");
+			Statement stmt=con.createStatement();
+			ResultSet rs=stmt.executeQuery("select * from Agency where id=2");
+			if(rs.next()) {
+				name = rs.getString("Name");
+			}
+			rs=stmt.executeQuery("select * from ListePartners where Agency=2");
+			HashMap<Integer, Float> partners = new HashMap<Integer, Float>();
+			while(rs.next()) {
+				partners.put(rs.getInt("Hotel"), rs.getFloat("Amount"));
+			}
+			for(int i : partners.keySet()) {
+				switch (i) {
+					case 2 :
+						offers.put(new HotelServiceImplService(new URL("http://localhost:8080/f1tlsram?wsdl")).getHotelServiceImplPort(), (double)partners.get(i));
+						break;
+					case 3 :
+						offers.put(new HotelServiceImplService(new URL("http://localhost:8080/f1tlsun?wsdl")).getHotelServiceImplPort(), (double)partners.get(i));
+						break;
+					case 4 :
+						offers.put(new HotelServiceImplService(new URL("http://localhost:8080/kyriad?wsdl")).getHotelServiceImplPort(), (double)partners.get(i));
+						break;
+					case 5 :
+						offers.put(new HotelServiceImplService(new URL("http://localhost:8080/crowne?wsdl")).getHotelServiceImplPort(), (double)partners.get(i));
+						break;
+					case 6 :
+						offers.put(new HotelServiceImplService(new URL("http://localhost:8080/f1mtpsud?wsdl")).getHotelServiceImplPort(), (double)partners.get(i));
+						break;
+					case 7 :
+						offers.put(new HotelServiceImplService(new URL("http://localhost:8080/ritz?wsdl")).getHotelServiceImplPort(), (double)partners.get(i));
+						break;
+				}
+			}
+			rs=stmt.executeQuery("select * from ListeClients where Agency=2");
+			ArrayList<Integer> listeClients = new ArrayList<>();
+			while(rs.next()) {
+				listeClients.add(rs.getInt("Client"));
+			}
+			for(int i = 0; i < listeClients.size(); i++) {
+				int id = listeClients.get(i);
+				Client clt = new Client();
+				int cc = 0;
+				
+				rs = stmt.executeQuery("select * from CreditCard where id="+ cc);
+				CreditCard card = new CreditCard();
+				if(rs.next()) {
+					card.setNumber(rs.getString("Number"));
+					card.setCvv(rs.getString("CVV"));
+					card.setExpiration(rs.getDate("Expiration").toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+					card.setAmount(rs.getFloat("Amount"));
+					card.setName(clt);
+					
+				}
+				clt.setCc(card);
+				
+				rs=stmt.executeQuery("select * from Client where ID="+id);
+				if(rs.next()) {
+					clt.setName(rs.getString("Name"));
+					clt.setFirstname(rs.getString("Firstname"));
+					clt.setAge(rs.getInt("Age"));
+					clt.setTelNumber(rs.getString("Tel"));
+					cc = rs.getInt("CreditCard");
+					String[] cred = {rs.getString("Login"),rs.getString("Password")};
+					clients.put(clt, cred);					
+				}
+			}
 		}
-		return agency;
+		catch (Exception e) {
+			System.err.println(e);
+		}
+		
+		return new Agency(name, clients, offers);
+	}
+	
+	
+	public static Agency Duovago() {
+		HashMap<HotelService, Double> offers = new HashMap<>();
+		HashMap<Client, String[]> clients = new HashMap<>();
+		String name = "";
+		try {  
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con=DriverManager.getConnection(
+			"jdbc:mysql://dakota.o2switch.net:3306/sc1samo7154_hotelfinderdb","sc1samo7154_hotelfinder","hotelfinderdb");
+			Statement stmt=con.createStatement();
+			ResultSet rs=stmt.executeQuery("select * from Agency where id=3");
+			if(rs.next()) {
+				name = rs.getString("Name");
+			}
+			rs=stmt.executeQuery("select * from ListePartners where Agency=3");
+			HashMap<Integer, Float> partners = new HashMap<Integer, Float>();
+			while(rs.next()) {
+				partners.put(rs.getInt("Hotel"), rs.getFloat("Amount"));
+			}
+			for(int i : partners.keySet()) {
+				switch (i) {
+					case 2 :
+						offers.put(new HotelServiceImplService(new URL("http://localhost:8080/f1tlsram?wsdl")).getHotelServiceImplPort(), (double)partners.get(i));
+						break;
+					case 3 :
+						offers.put(new HotelServiceImplService(new URL("http://localhost:8080/f1tlsun?wsdl")).getHotelServiceImplPort(), (double)partners.get(i));
+						break;
+					case 4 :
+						offers.put(new HotelServiceImplService(new URL("http://localhost:8080/kyriad?wsdl")).getHotelServiceImplPort(), (double)partners.get(i));
+						break;
+					case 5 :
+						offers.put(new HotelServiceImplService(new URL("http://localhost:8080/crowne?wsdl")).getHotelServiceImplPort(), (double)partners.get(i));
+						break;
+					case 6 :
+						offers.put(new HotelServiceImplService(new URL("http://localhost:8080/f1mtpsud?wsdl")).getHotelServiceImplPort(), (double)partners.get(i));
+						break;
+					case 7 :
+						offers.put(new HotelServiceImplService(new URL("http://localhost:8080/ritz?wsdl")).getHotelServiceImplPort(), (double)partners.get(i));
+						break;
+				}
+			}
+			rs=stmt.executeQuery("select * from ListeClients where Agency=3");
+			ArrayList<Integer> listeClients = new ArrayList<>();
+			while(rs.next()) {
+				listeClients.add(rs.getInt("Client"));
+			}
+			for(int i = 0; i < listeClients.size(); i++) {
+				int id = listeClients.get(i);
+				Client clt = new Client();
+				int cc = 0;
+				
+				rs = stmt.executeQuery("select * from CreditCard where id="+ cc);
+				CreditCard card = new CreditCard();
+				if(rs.next()) {
+					card.setNumber(rs.getString("Number"));
+					card.setCvv(rs.getString("CVV"));
+					card.setExpiration(rs.getDate("Expiration").toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+					card.setAmount(rs.getFloat("Amount"));
+					card.setName(clt);
+					
+				}
+				clt.setCc(card);
+				
+				rs=stmt.executeQuery("select * from Client where ID="+id);
+				if(rs.next()) {
+					clt.setName(rs.getString("Name"));
+					clt.setFirstname(rs.getString("Firstname"));
+					clt.setAge(rs.getInt("Age"));
+					clt.setTelNumber(rs.getString("Tel"));
+					cc = rs.getInt("CreditCard");
+					String[] cred = {rs.getString("Login"),rs.getString("Password")};
+					clients.put(clt, cred);					
+				}
+			}
+		}
+		catch (Exception e) {
+			System.err.println(e);
+		}
+		
+		return new Agency(name, clients, offers);
 	}
 
 	public static Client connectClient(Agency agency ) {

@@ -14,7 +14,7 @@ public class MainAgency {
 	public static void main(String[] args) {
 		
 		boolean debug = true;
-		System.out.println("Goolge :\n1. HotelAdvisor.com\n2. Hotel.net\n");
+		System.out.println("Goolge :\n1. HotelAdvisor.com\n2. Hotel.net\n3. Duovago");
 		Scanner scanner = new Scanner(System.in);
 		Agency agency = null;
 		int agencyChoice = scanner.nextInt();
@@ -26,30 +26,18 @@ public class MainAgency {
 			case 2 :
 				agency = MainFunctions.HoteldotNet();
 				break;
+			case 3 :
+				agency = MainFunctions.Duovago();
+				break;
 			default :
 				System.err.println("This choice does not exist!\nBye bye");
 				System.exit(1);
 
 		}
 
-//		try{  
-//			Class.forName("com.mysql.jdbc.Driver");  
-//			Connection con=DriverManager.getConnection(  
-//			"jdbc:mysql://sql110.epizy.com/epiz_32861716_hotelfinderdb","epiz_32861716","ehIiqX6cItun");  
-//			Statement stmt=con.createStatement();  
-//			ResultSet rs=stmt.executeQuery("select * from 'Client';");  
-//			while(rs.next())  
-//				System.out.println(rs.getInt("ID"));  
-//			con.close();  
-//		}
-//		catch(Exception e){ 
-//			System.out.println(e);
-//		}  
-		  
-		
 		Client client = null;
 		if(!debug) {
-			client = MainFunctions.connectClient(agency);		
+			client = MainFunctions.connectClient(agency);
 		}
 		else {
 			Set<Client> list =agency.getClientInfos().keySet();
@@ -60,7 +48,6 @@ public class MainAgency {
 		
 		System.out.println("Welcome to "+ agency.getAgencyName() +" !");
 		System.out.println("logged as "+ client.getFirstname()+" "+client.getName());
-		
 		int choice = -1;
 		while(choice != 3) {
 			System.out.println("1. Find a hotel \n2. View all available offers \n3. Exit");
