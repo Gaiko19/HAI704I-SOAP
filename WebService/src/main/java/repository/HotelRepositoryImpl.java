@@ -1,5 +1,9 @@
 package repository;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -12,22 +16,63 @@ public class HotelRepositoryImpl implements HotelRepository {
 
 	private Hotel hotel;
 	
-	public HotelRepositoryImpl() {
-		hotel = new Hotel();
-		Position pos = new Position("City", "Country", "street", 1);
-		ArrayList<Room> rooms = new ArrayList<Room>();
-		Room r1 = new Room(1, true, 10, 1);
-		Room r2 = new Room(2, true, 10, 1);
-		Room r3 = new Room(3, true, 10, 1);
-		rooms.add(r1);
-		rooms.add(r2);
-		rooms.add(r3);
-		this.hotel.setName("Hotel");
-		this.hotel.setStars(1);
-		this.hotel.setAddress(pos);
-		this.hotel.setRooms(rooms);
+	public HotelRepositoryImpl(int ID) {
+			
+	String name="";
+	float rating = 0;
+	int pos = 0;
+	int id = 0;
+	Position adress = new Position();
+	ArrayList<Room> rooms = new ArrayList<>();
+	ArrayList<Integer> roomIds = new ArrayList<>();
+	try{  
+		Class.forName("com.mysql.jdbc.Driver");
+		Connection con=DriverManager.getConnection(
+		"jdbc:mysql://dakota.o2switch.net:3306/sc1samo7154_hotelfinderdb","sc1samo7154_hotelfinder","hotelfinderdb");
+		Statement stmt=con.createStatement();
+		ResultSet rs=stmt.executeQuery("select * from Hotel where id="+ID);
+		if(rs.next()) {
+			name = rs.getString("Name");
+			rating = rs.getFloat("Rating"); 
+			pos= rs.getInt("Adress");
+			id = rs.getInt("ID");
+		}
+		rs = stmt.executeQuery("select * from Position where id="+ pos);
+		if(rs.next()) {
+			adress.setCity(rs.getString("City"));
+			adress.setCountry(rs.getString("Country"));
+			adress.setStreet(rs.getString("Street"));
+			adress.setNumber(rs.getInt("Number"));
+		}
+		rs = stmt.executeQuery("select Room from ListeRooms where Hotel="+ id);
+		while(rs.next()) {
+			roomIds.add(rs.getInt(1));
+		}
+		for(int i = 0; i < roomIds.size(); i++) {
+			int roomID = roomIds.get(i);
+			rs = stmt.executeQuery("select * from Room where ID="+ roomID);
+			if(rs.next()) {
+				Room room = new Room();
+				room.setRoomNumber(rs.getInt("Number"));
+				room.setPrice(rs.getFloat("Price"));
+				room.setSize(rs.getInt("Size"));
+				rooms.add(room);
+			}
+		}
 		
-		hotel.setResa(new ArrayList<Reservation>());
+		con.close();
+	}
+	catch(Exception e){
+		System.out.println(e);
+	}
+	
+	this.hotel = new Hotel(
+			name,
+			rating,
+			rooms,
+			adress);
+	
+	hotel.setResa(new ArrayList<Reservation>());
 	}
 	
 	@Override

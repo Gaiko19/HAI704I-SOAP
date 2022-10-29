@@ -21,13 +21,13 @@ public class MainAgency {
 		
 		switch (agencyChoice) {
 			case 1 :
-				agency = MainFunctions.HotelAdvisor();
+				agency = MainFunctions.MakeAgence(1);
 				break;
 			case 2 :
-				agency = MainFunctions.HoteldotNet();
+				agency = MainFunctions.MakeAgence(2);
 				break;
 			case 3 :
-				agency = MainFunctions.Duovago();
+				agency = MainFunctions.MakeAgence(3);
 				break;
 			default :
 				System.err.println("This choice does not exist!\nBye bye");
@@ -49,7 +49,7 @@ public class MainAgency {
 		System.out.println("Welcome to "+ agency.getAgencyName() +" !");
 		System.out.println("logged as "+ client.getFirstname()+" "+client.getName());
 		int choice = -1;
-		while(choice != 3) {
+		while(choice != 3 && scanner.hasNextLine()) {
 			System.out.println("1. Find a hotel \n2. View all available offers \n3. Exit");
 			choice = scanner.nextInt();
 			switch (choice) {
@@ -65,7 +65,6 @@ public class MainAgency {
 					System.err.println("Option not available !\n");
 					break;
 			}
-			
 		}
 		scanner.close();
 	}

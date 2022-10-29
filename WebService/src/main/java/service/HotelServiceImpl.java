@@ -9,7 +9,6 @@ import model.Reservation;
 import model.Room;
 import repository.HotelRepository;
 import repository.HotelRepositoryImpl;
-import repository.RitzRepositoryImpl;
 
 @WebService(endpointInterface="service.HotelService")
 public class HotelServiceImpl implements HotelService {
@@ -41,23 +40,14 @@ public class HotelServiceImpl implements HotelService {
 		return repo.toString();
 	}
 	
-	public HotelServiceImpl(String type) {
-		switch (type) {
-		case "Ritz" :
-			this.repo = new RitzRepositoryImpl();
-			break;
-		default :
-			this.repo = new HotelRepositoryImpl();
-			break;
-		}
-	}
+
 	
 	public HotelServiceImpl(HotelRepository repo) {
 		this.repo = repo;
 	}
 	
 	public HotelServiceImpl() {
-		this.repo = new HotelRepositoryImpl();
+		this.repo = new HotelRepositoryImpl(2);
 	}
 
 }

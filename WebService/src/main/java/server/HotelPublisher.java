@@ -2,23 +2,19 @@ package server;
 
 import javax.xml.ws.Endpoint;
 
-import repository.CrowneRepositoryImpl;
-import repository.F1MtpSudRepositoryImpl;
-import repository.F1TlsUnRepositoryImpl;
 import repository.HotelRepository;
-import repository.KyriadRepositoryImpl;
-import repository.RitzRepositoryImpl;
+import repository.HotelRepositoryImpl;
 import service.HotelServiceImpl;
 
 public class HotelPublisher {
 
 	public static void main(String[] args) {
-		HotelRepository ritz = new RitzRepositoryImpl();
-		HotelRepository kyriad = new KyriadRepositoryImpl();
-		HotelRepository f1mtpsud = new F1MtpSudRepositoryImpl();
-		HotelRepository f1tlsram = new F1TlsUnRepositoryImpl();
-		HotelRepository f1tlsun = new F1TlsUnRepositoryImpl();
-		HotelRepository crowne = new CrowneRepositoryImpl();
+		HotelRepository ritz = new HotelRepositoryImpl(7);
+		HotelRepository kyriad = new HotelRepositoryImpl(4);
+		HotelRepository f1mtpsud = new HotelRepositoryImpl(6);
+		HotelRepository f1tlsram = new HotelRepositoryImpl(2);
+		HotelRepository f1tlsun = new HotelRepositoryImpl(3);
+		HotelRepository crowne = new HotelRepositoryImpl(5);
 		Endpoint.publish("http://localhost:8080/ritz", new HotelServiceImpl(ritz));
 		Endpoint.publish("http://localhost:8080/kyriad", new HotelServiceImpl(kyriad));
 		Endpoint.publish("http://localhost:8080/f1mtpsud", new HotelServiceImpl(f1mtpsud));
