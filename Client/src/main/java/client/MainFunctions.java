@@ -3,6 +3,7 @@ package client;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.text.DecimalFormat;
@@ -15,7 +16,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Scanner;
-
 import exception.ReservationException;
 import webservice.Client;
 import webservice.CreditCard;
@@ -115,44 +115,51 @@ public class MainFunctions {
 	
 
 	public static Client connectClient(Agency agency ) {
-		try (Scanner scanner = new Scanner(System.in)) {
+		try {
+			Scanner textScanner = new Scanner(System.in);
 			String username = "";
 			String pwd = "";
 			System.out.println("Please enter your username :\n");
-			username = scanner.nextLine();
+			username = textScanner.nextLine();
 			System.out.println("Please enter your password :\n");
-			pwd = scanner.nextLine();
+			pwd = textScanner.nextLine();
 			Client client = null;
 			client = agency.connectClient(username, pwd);
 			while(client == null) {
 				System.out.println("Wrong credentials!\n");
 				System.out.println("Please enter your username :\n");
-				username = scanner.nextLine();
+				username = textScanner.nextLine();
 				System.out.println("Please enter your password :\n");
-				pwd = scanner.nextLine();
+				pwd = textScanner.nextLine();
 				client = agency.connectClient(username, pwd);
 			}
 
 			return client;
 		}
+		catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	public static void hotelFinder(Agency agency, Client client) {
-		try (Scanner scanner = new Scanner(System.in)) {
+		try  {
+			Scanner textScanner = new Scanner(System.in);
+			Scanner intScanner = new Scanner(System.in);
 			System.out.println("Where do you want to go ?\n");
-			String location = scanner.nextLine();
+			String location = textScanner.nextLine();
 			System.out.println("When would you like to go ? (yyyy-MM-dd))\n");
-			String in = scanner.nextLine();
+			String in = textScanner.nextLine();
 			System.out.println("When would you like to leave ? (yyyy-MM-dd))\n");
-			String out = scanner.nextLine();
+			String out = textScanner.nextLine();
 			System.out.println("How many people will be with you ?\n");
-			int size = scanner.nextInt();
+			int size = intScanner.nextInt();
 			System.out.println("Select your range of price\n Price min : ");
-			int priceMin = scanner.nextInt();
+			int priceMin = intScanner.nextInt();
 			System.out.println("Price max : ");
-			int priceMax = scanner.nextInt();
+			int priceMax = intScanner.nextInt();
 			System.out.println("Minimum of rating: ");
-			double rating = scanner.nextInt();
+			double rating = intScanner.nextInt();
 			System.out.println("Looking for the best offers...\n");
 			
 			HashMap<Hotel, Double> hotels = research(agency, location, size, in, out, priceMin, priceMax, rating);
@@ -163,8 +170,8 @@ public class MainFunctions {
 			}
 			
 			ArrayList<Hotel> hotelList = new ArrayList<>();
+			int cpt = 1;
 			for (Entry<Hotel, Double> prox : hotels.entrySet()) {
-				int cpt = 1;
 				Hotel hotel = prox.getKey();
 				hotelList.add(hotel);
 				System.out.println(hotel.getName() + " " + hotel.getStars() + "\n" + hotel.getAddress().toString() +"");
@@ -172,6 +179,7 @@ public class MainFunctions {
 					Room room = hotel.getRooms().get(j-1);
 					System.out.println("N°" + cpt + "-" + j + " : " + room.toString());
 				}	
+				System.out.println();
 				cpt++;
 			}
 			
@@ -181,7 +189,7 @@ public class MainFunctions {
 			int roomChoice = 0;
 			while(hotelChoice == -1) {
 				System.out.println("Hotel number (0 to exit): ");
-				hotelChoice = scanner.nextInt();
+				hotelChoice = intScanner.nextInt();
 				if(hotelChoice == 0) {
 					System.out.println("Quitting hotel research...");
 					return;
@@ -192,7 +200,7 @@ public class MainFunctions {
 				}
 				else {
 					System.out.println("Room number : ");
-					roomChoice = scanner.nextInt();
+					roomChoice = intScanner.nextInt();
 				}
 			}
 			LocalDate ind = LocalDate.parse(in) ;
@@ -202,6 +210,9 @@ public class MainFunctions {
 			} catch (ReservationException e) {
 				e.printStackTrace();
 			}
+		}
+		catch(Exception e) {
+			e.printStackTrace();
 		}
 	}
 		
@@ -229,8 +240,9 @@ public class MainFunctions {
 	public static void makeReservation(Agency agency, Client client, LocalDate in, LocalDate out, Room room, Hotel hotel, double amount) throws ReservationException {
 		Reservation resa = null;
 		System.out.println("Use your saved payment method ? [y/n]");
-		try (Scanner scanner = new Scanner(System.in)) {
-			String choice = scanner.nextLine();
+		try {
+			Scanner textScanner = new Scanner(System.in);
+			String choice = textScanner.nextLine();
 			if(choice.equals("y")) {
 				CreditCard cc = client.getCc();
 				if(cc == null || cc.getCvv() == "000") {
@@ -238,7 +250,7 @@ public class MainFunctions {
 				}
 				else {
 					System.out.println("Do you confirm your purchase ? [y/n]");
-					String confirm = scanner.nextLine();
+					String confirm = textScanner.nextLine();
 					if(confirm.equals("y")) {
 						double creditCardBalance = client.getCc().getAmount();
 						double price = room.getPrice() - (room.getPrice() / 100) * amount;
@@ -246,6 +258,27 @@ public class MainFunctions {
 							client.subMoney(price);
 							resa = new Reservation(client, in, out, room);
 							hotel.getResa().add(resa);
+							try{  
+								Class.forName("com.mysql.jdbc.Driver");
+								Connection con=DriverManager.getConnection(
+								"jdbc:mysql://dakota.o2switch.net:3306/sc1samo7154_hotelfinderdb","sc1samo7154_hotelfinder","hotelfinderdb");
+								Statement stmt=con.createStatement();
+								ResultSet rs = stmt.executeQuery("SELECT ID FROM Client WHERE "
+										+ "Name='"+client.getName() +"' AND Firstname='" + client.getFirstname()+"'");
+								int clientID = 0; 
+								if(rs.next()) {
+									clientID = rs.getInt("ID");
+								}
+
+								PreparedStatement preparedStmt = con.prepareStatement(
+										"INSERT INTO `Reservation` (`ID`, `Client`, `Room`, `DateIn`, `DateOut`, `Price`) "
+										+ "VALUES (NULL, " +clientID + ", '2', '"+ resa.getIn()+"', '"+ resa.getOut()+"', '"+ price +"')"
+										); // A FINIR
+								preparedStmt.execute();
+							}
+							catch (Exception e) {
+								e.printStackTrace();
+							}
 							System.out.println("Your order have been placed. Thank you for your purchase !\n");
 							getRecipe(hotel, client, resa);
 						}
@@ -264,17 +297,20 @@ public class MainFunctions {
 			}
 			else {
 				System.out.println("Card number : ");
-				String num = scanner.nextLine();
+				String num = textScanner.nextLine();
 				System.out.println("CVV number : ");
-				String cvv = scanner.nextLine();
+				String cvv = textScanner.nextLine();
 				System.out.println("Expiration date (yyyy-mm-dd) : ");
-				LocalDate exp = LocalDate.parse(scanner.nextLine());
+				LocalDate exp = LocalDate.parse(textScanner.nextLine());
 				resa = new Reservation(client, in, out, room);
 				hotel.getResa().add(resa);
 				System.out.println("Your order have been placed. Thank you for your purchase !\n");
 				getRecipe(hotel, client, resa);
 				
 			}
+		}
+		catch(Exception e) {
+			e.printStackTrace();
 		}
 	}
 
