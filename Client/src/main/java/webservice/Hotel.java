@@ -1,6 +1,7 @@
 
 package webservice;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -174,7 +175,7 @@ public class Hotel {
     
 	@Override
 	public String toString() {
-		return "Hotel "+ this.getName() +"\n Rating : " + this.getStars() + "\n" + this.getAddress().toString() + "\n" + roomsToString();
+		return "Hotel "+ this.getName() +"\n Rating : " + Double.parseDouble(new DecimalFormat("##.##").format(this.getStars())) + "\n" + this.getAddress().toString() + "\n" + roomsToString();
 	}
 	
 	public String roomsToString() {

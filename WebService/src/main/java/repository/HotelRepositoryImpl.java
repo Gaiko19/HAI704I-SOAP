@@ -24,7 +24,6 @@ public class HotelRepositoryImpl implements HotelRepository {
 	int id = 0;
 	Position adress = new Position();
 	ArrayList<Room> rooms = new ArrayList<>();
-	ArrayList<Integer> roomIds = new ArrayList<>();
 	try{  
 		Class.forName("com.mysql.jdbc.Driver");
 		Connection con=DriverManager.getConnection(
@@ -44,20 +43,14 @@ public class HotelRepositoryImpl implements HotelRepository {
 			adress.setStreet(rs.getString("Street"));
 			adress.setNumber(rs.getInt("Number"));
 		}
-		rs = stmt.executeQuery("select Room from ListeRooms where Hotel="+ id);
+
+		rs = stmt.executeQuery("select * from Room where Hotel="+ id);
 		while(rs.next()) {
-			roomIds.add(rs.getInt(1));
-		}
-		for(int i = 0; i < roomIds.size(); i++) {
-			int roomID = roomIds.get(i);
-			rs = stmt.executeQuery("select * from Room where ID="+ roomID);
-			if(rs.next()) {
 				Room room = new Room();
 				room.setRoomNumber(rs.getInt("Number"));
 				room.setPrice(rs.getFloat("Price"));
 				room.setSize(rs.getInt("Size"));
 				rooms.add(room);
-			}
 		}
 		
 		con.close();

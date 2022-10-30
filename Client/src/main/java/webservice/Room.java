@@ -1,6 +1,8 @@
 
 package webservice;
 
+import java.text.DecimalFormat;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
@@ -108,7 +110,7 @@ public class Room {
     
 	@Override
 	public String toString() {
-		return "Room n°" + roomNumber + " [" + size + " persons] " + price + "€";
+		return "Room n°" + roomNumber + " [" + size + " persons] " + Double.parseDouble(new DecimalFormat("##.##").format(price)) + "€";
 	}
 
 }

@@ -92,7 +92,7 @@ public class AgencyGUI extends JFrame {
 				Agency agency = null;
 				agency = MainFunctions.MakeAgence(1);
 				Client client = null;
-				client = MainFunctions.connectClient(loginUsername, loginPassword, agency);
+				client = agency.connectClient(loginUsername, loginPassword);
 				
 				if(client == null) {
 					credentialAlert.setText("Wrong credentials, unable to connect");
@@ -127,7 +127,7 @@ public class AgencyGUI extends JFrame {
 		contentPane.add(agencyInput);
 		
 		JLabel backgroundImage = new JLabel("");
-		backgroundImage.setIcon(new ImageIcon("/Users/macbook/Desktop/HAI704I-SOAP/mediaGUI/blurImage_563x373.jpeg"));
+		backgroundImage.setIcon(new ImageIcon("../mediaGUI/blurImage_563x373.jpeg"));
 		backgroundImage.setBounds(6, 6, 563, 373);
 		contentPane.add(backgroundImage);
 	}
