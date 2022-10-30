@@ -141,6 +141,20 @@ public class MainFunctions {
 			return null;
 		}
 	}
+	
+	public static Client connectClient(String login, String password, Agency agency) {
+		try {
+			String username = login;
+			String pwd = password;
+			Client client = null;
+			client = agency.connectClient(username, pwd);
+			return client;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 
 	public static void hotelFinder(Agency agency, Client client) {
 		try  {

@@ -25,6 +25,7 @@ public class AgencyGUI extends JFrame {
 	private JTextField usernameInput;
 	private JPasswordField passwordInput;
 	private JTextField credentialAlert;
+	private JTextField agencyInput;
 
 	/**
 	 * Launch the application.
@@ -57,7 +58,7 @@ public class AgencyGUI extends JFrame {
 		
 		JLabel usernameLabel = new JLabel("Username");
 		usernameLabel.setForeground(Color.white);
-		usernameLabel.setBounds(133, 145, 91, 16);
+		usernameLabel.setBounds(133, 162, 91, 16);
 		contentPane.add(usernameLabel);
 		
 		JLabel passwordLabel = new JLabel("Password");
@@ -70,11 +71,11 @@ public class AgencyGUI extends JFrame {
 		loginLabel.setBackground(new Color(255, 255, 255));
 		loginLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		loginLabel.setFont(new Font("KufiStandardGK", Font.BOLD, 20));
-		loginLabel.setBounds(190, 79, 181, 29);
+		loginLabel.setBounds(190, 58, 181, 29);
 		contentPane.add(loginLabel);
 		
 		usernameInput = new JTextField();
-		usernameInput.setBounds(215, 137, 167, 29);
+		usernameInput.setBounds(215, 156, 167, 29);
 		contentPane.add(usernameInput);
 		usernameInput.setColumns(10);
 		
@@ -88,13 +89,16 @@ public class AgencyGUI extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				String loginUsername = usernameInput.getText();
 				String loginPassword = String.valueOf(passwordInput.getPassword());
-				Agency agency = new Agency();
-				Client client = new Client();
-				client = agency.connectClient(loginUsername, loginPassword);
-				while(client == null) {
+				Agency agency = null;
+				agency = MainFunctions.MakeAgence(1);
+				Client client = null;
+				client = MainFunctions.connectClient(loginUsername, loginPassword, agency);
+				
+				if(client == null) {
 					credentialAlert.setText("Wrong credentials, unable to connect");
+				} else {
+			        new hotelFinder().setVisible(true);
 				}
-		        new hotelFinder().setVisible(true);
 			}
 		});
 		loginBtn.setBackground(new Color(243, 254, 255));
@@ -110,6 +114,17 @@ public class AgencyGUI extends JFrame {
 		credentialAlert.setBounds(133, 242, 318, 26);
 		contentPane.add(credentialAlert);
 		credentialAlert.setColumns(10);
+		
+		JLabel agencyLabel = new JLabel("Agency Name");
+		agencyLabel.setFont(new Font("Lucida Grande", Font.PLAIN, 10));
+		agencyLabel.setForeground(Color.WHITE);
+		agencyLabel.setBounds(133, 117, 75, 16);
+		contentPane.add(agencyLabel);
+		
+		agencyInput = new JTextField();
+		agencyInput.setColumns(10);
+		agencyInput.setBounds(215, 111, 167, 29);
+		contentPane.add(agencyInput);
 		
 		JLabel backgroundImage = new JLabel("");
 		backgroundImage.setIcon(new ImageIcon("/Users/macbook/Desktop/HAI704I-SOAP/mediaGUI/blurImage_563x373.jpeg"));
