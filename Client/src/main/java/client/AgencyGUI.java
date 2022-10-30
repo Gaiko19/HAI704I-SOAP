@@ -18,6 +18,8 @@ import javax.swing.ImageIcon;
 import java.awt.Color;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.JComboBox;
+import javax.swing.DefaultComboBoxModel;
 
 public class AgencyGUI extends JFrame {
 
@@ -25,7 +27,6 @@ public class AgencyGUI extends JFrame {
 	private JTextField usernameInput;
 	private JPasswordField passwordInput;
 	private JTextField credentialAlert;
-	private JTextField agencyInput;
 
 	/**
 	 * Launch the application.
@@ -52,6 +53,12 @@ public class AgencyGUI extends JFrame {
 		setBounds(100, 100, 575, 413);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		
+		JComboBox agencySelector = new JComboBox();
+		agencySelector.setModel(new DefaultComboBoxModel(new String[] {"HotelAdvisor.com", "Hotel.net", "DuoVago"}));
+		agencySelector.setMaximumRowCount(3);
+		agencySelector.setBounds(215, 112, 167, 27);
+		contentPane.add(agencySelector);
 
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
@@ -89,8 +96,16 @@ public class AgencyGUI extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				String loginUsername = usernameInput.getText();
 				String loginPassword = String.valueOf(passwordInput.getPassword());
+				String agencyId = "";
+				agencyId = (String)agencySelector.getSelectedItem();
 				Agency agency = null;
-				agency = MainFunctions.MakeAgence(1);
+				if(agencyId.equals("HotelAdvisor.com")) {
+					agency = MainFunctions.MakeAgence(1);
+				} else if (agencyId.equals("Hotel.net")) {
+					agency = MainFunctions.MakeAgence(2);
+				} else {
+					agency = MainFunctions.MakeAgence(3);
+				}
 				Client client = null;
 				client = MainFunctions.connectClient(loginUsername, loginPassword, agency);
 				
@@ -115,16 +130,10 @@ public class AgencyGUI extends JFrame {
 		contentPane.add(credentialAlert);
 		credentialAlert.setColumns(10);
 		
-		JLabel agencyLabel = new JLabel("Agency Name");
-		agencyLabel.setFont(new Font("Lucida Grande", Font.PLAIN, 10));
+		JLabel agencyLabel = new JLabel("Agency");
 		agencyLabel.setForeground(Color.WHITE);
-		agencyLabel.setBounds(133, 117, 75, 16);
+		agencyLabel.setBounds(133, 116, 91, 16);
 		contentPane.add(agencyLabel);
-		
-		agencyInput = new JTextField();
-		agencyInput.setColumns(10);
-		agencyInput.setBounds(215, 111, 167, 29);
-		contentPane.add(agencyInput);
 		
 		JLabel backgroundImage = new JLabel("");
 		backgroundImage.setIcon(new ImageIcon("/Users/macbook/Desktop/HAI704I-SOAP/mediaGUI/blurImage_563x373.jpeg"));
