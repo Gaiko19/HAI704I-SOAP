@@ -21,7 +21,7 @@ public class HotelPublisher {
 		Endpoint.publish("http://localhost:8080/f1tlsram", new HotelServiceImpl(f1tlsram));
 		Endpoint.publish("http://localhost:8080/f1tlsun", new HotelServiceImpl(f1tlsun));
 		Endpoint.publish("http://localhost:8080/crowne", new HotelServiceImpl(crowne));
-		System.err.println("Server ready!");
+		System.err.println("Server ready!"); 
 
 	}
 

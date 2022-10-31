@@ -17,8 +17,13 @@ import javax.swing.JButton;
 import javax.swing.ImageIcon;
 import java.awt.Color;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.awt.event.ActionEvent;
 import javax.swing.JComboBox;
+import javax.imageio.ImageIO;
 import javax.swing.DefaultComboBoxModel;
 
 public class AgencyGUI extends JFrame {
@@ -46,8 +51,9 @@ public class AgencyGUI extends JFrame {
 
 	/**
 	 * Create the frame.
+	 * @throws IOException 
 	 */
-	public AgencyGUI() {
+	public AgencyGUI() throws IOException {
 		setTitle("Hotel Finder");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 575, 413);
@@ -62,6 +68,7 @@ public class AgencyGUI extends JFrame {
 
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
+		
 		
 		JLabel usernameLabel = new JLabel("Username");
 		usernameLabel.setForeground(Color.white);
@@ -106,13 +113,27 @@ public class AgencyGUI extends JFrame {
 				} else {
 					agency = MainFunctions.MakeAgence(3);
 				}
-				Client client = null;
-				client = agency.connectClient(loginUsername, loginPassword);
+				Client client = new Client();
+				client = MainFunctions.connectClient(loginUsername, loginPassword, agency);
 				
 				if(client == null) {
 					credentialAlert.setText("Wrong credentials, unable to connect");
 				} else {
-			        new hotelFinder().setVisible(true);
+			        connectedUser connectedUser = null;
+					try {connectedUser = new connectedUser();} catch (MalformedURLException e1) {e1.printStackTrace();} catch (IOException e1) {e1.printStackTrace();}
+			        
+					if(agencyId.equals("HotelAdvisor.com")) {
+						connectedUser.agencyDisplay.setText("HotelAdvisor.com");
+					} else if (agencyId.equals("Hotel.net")) {
+						connectedUser.agencyDisplay.setText("Hotel.net");
+					} else {
+						connectedUser.agencyDisplay.setText("DuoVago");
+					}
+			        connectedUser.nameInput.setText(client.getName());
+			        connectedUser.agencyInput.setText(client.getName());
+			        connectedUser.loginUser.setText(client.getName());
+			        connectedUser.passwordUser.setText(client.getName());
+			        connectedUser.setVisible(true);
 				}
 			}
 		});
@@ -135,8 +156,20 @@ public class AgencyGUI extends JFrame {
 		agencyLabel.setBounds(133, 116, 91, 16);
 		contentPane.add(agencyLabel);
 		
+		JButton exitBtn = new JButton("Exit");
+		exitBtn.setForeground(new Color(255, 0, 0));
+		exitBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.exit(0);
+			}
+		});
+		exitBtn.setBackground(new Color(243, 254, 255));
+		exitBtn.setBounds(482, 338, 75, 29);
+		contentPane.add(exitBtn);
+		
 		JLabel backgroundImage = new JLabel("");
-		backgroundImage.setIcon(new ImageIcon("../mediaGUI/blurImage_563x373.jpeg"));
+		BufferedImage img = ImageIO.read(new URL("http://hotelfinder.sc1samo7154.universe.wf/blurImage_563x373.jpeg"));
+		backgroundImage.setIcon(new ImageIcon(img));
 		backgroundImage.setBounds(6, 6, 563, 373);
 		contentPane.add(backgroundImage);
 	}

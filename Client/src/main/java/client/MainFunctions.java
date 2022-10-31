@@ -142,6 +142,20 @@ public class MainFunctions {
 		}
 	}
 	
+	public static Client connectClient(String login, String password, Agency agency) {
+		try {
+			String username = login;
+			String pwd = password;
+			Client client = null;
+			client = agency.connectClient(username, pwd);
+			return client;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
 	public static void hotelFinder(Agency agency, Client client) {
 		try  {
 			Scanner textScanner = new Scanner(System.in);
@@ -174,7 +188,7 @@ public class MainFunctions {
 			for (Entry<Hotel, Double> prox : hotels.entrySet()) {
 				Hotel hotel = prox.getKey();
 				hotelList.add(hotel);
-				System.out.println(hotel.getName() + " " + hotel.getStars() + "\n" + hotel.getAddress().toString());
+				System.out.println(hotel.getName() + " " + hotel.getStars() + "\n" + hotel.getAddress().toString() +"");
 				for(int j = 1; j <= hotel.getRooms().size(); j++) {
 					Room room = hotel.getRooms().get(j-1);
 					System.out.println("N°" + cpt + "-" + j + " : " + room.toString());
@@ -215,6 +229,42 @@ public class MainFunctions {
 			e.printStackTrace();
 		}
 	}
+	
+	public static void hotelFinderGUI(Agency agency, Client client, String City, int bedNumbers, int minPrice, int maxPrice, double minRating, String outDate, String inDate) {
+		try  {
+			String location = City;
+			String in = inDate;
+			String out = outDate;
+			int size = bedNumbers;
+			int priceMin = minPrice;
+			int priceMax = maxPrice;
+			double rating = minRating;
+			
+			HashMap<Hotel, Double> hotels = research(agency, location, size, in, out, priceMin, priceMax, rating);
+			
+			if(hotels.isEmpty()) {
+				System.err.println("Sorry, no hotels corresponding to your needs.");
+				return;
+			}
+			
+			ArrayList<Hotel> hotelList = new ArrayList<>();
+			int cpt = 1;
+			for (Entry<Hotel, Double> prox : hotels.entrySet()) {
+				Hotel hotel = prox.getKey();
+				hotelList.add(hotel);
+				System.out.println(hotel.getName() + " " + hotel.getStars() + "\n" + hotel.getAddress().toString() +"");
+				for(int j = 1; j <= hotel.getRooms().size(); j++) {
+					Room room = hotel.getRooms().get(j-1);
+					System.out.println("N°" + cpt + "-" + j + " : " + room.toString());
+				}	
+				System.out.println();
+				cpt++;
+			}
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
 		
 	public static HashMap<Hotel, Double> research(Agency agency, String location, int size, String in, String out, int priceMin, int priceMax, double rating) {
 		HashMap<Hotel, Double> hotels = new HashMap<>();
@@ -227,8 +277,8 @@ public class MainFunctions {
 				if(!results.getRooms().isEmpty()) {
 					for (Room room : results.getRooms()) {
 						room.setPrice(room.getPrice() - (room.getPrice() / 100 ) * agency.getOffers().get(hotel));
-						double value =Double.parseDouble(new DecimalFormat("##.##").format(room.getPrice()));
-						room.setPrice(value);
+						/*double value = Double.parseDouble(new DecimalFormat("##.##").format(room.getPrice()));
+						room.setPrice(value);*/
 					}
 					hotels.put(results, prox.getValue());						
 				}
@@ -269,28 +319,11 @@ public class MainFunctions {
 								if(rs.next()) {
 									clientID = rs.getInt("ID");
 								}
-								
-								rs = stmt.executeQuery("SELECT ID FROM Hotel WHERE Name='"+hotel.getName()+"'");
-								int hotelID = 0;
-								if(rs.next()) {
-									hotelID = rs.getInt("ID");
-								}
-								
-								rs = stmt.executeQuery("SELECT ID FROM Room WHERE Number="+ room.getRoomNumber()+" AND Hotel="+hotelID);
-								int roomID = 0; 
-								if(rs.next()) {
-									roomID = rs.getInt("ID");
-								}
 
 								PreparedStatement preparedStmt = con.prepareStatement(
 										"INSERT INTO `Reservation` (`ID`, `Client`, `Room`, `DateIn`, `DateOut`, `Price`) "
-										+ "VALUES (NULL, " +clientID + ", '"+roomID+"', '"+ resa.getIn()+"', '"+ resa.getOut()+"', '"+ price +"')"
+										+ "VALUES (NULL, " +clientID + ", '2', '"+ resa.getIn()+"', '"+ resa.getOut()+"', '"+ price +"')"
 										); // A FINIR
-								preparedStmt.execute();
-								
-								// Update solde client
-								preparedStmt = con.prepareStatement(
-										"UPDATE `CreditCard` SET `Amount` = '" + (client.getCc().getAmount()) + "' WHERE `CreditCard`.`ID` =" + clientID); // A FINIR
 								preparedStmt.execute();
 							}
 							catch (Exception e) {
@@ -349,7 +382,7 @@ public class MainFunctions {
 		System.out.println(Reservation.adaptiveDisplay("room", String.valueOf(resa.getRoom().getRoomNumber()), size));
 		System.out.println(Reservation.adaptiveDisplay("datein", String.valueOf(resa.getIn()), size));
 		System.out.println(Reservation.adaptiveDisplay("dateout", String.valueOf(resa.getOut()), size));
-		System.out.println(Reservation.adaptiveDisplay("price", String.valueOf(Double.parseDouble(new DecimalFormat("##.##").format(resa.getRoom().getPrice())))+"€", size));
+		System.out.println(Reservation.adaptiveDisplay("price", String.valueOf(resa.getRoom().getPrice())+"€", size));
 		System.out.println(Reservation.formRecipe(size, "footer"));
 	}
 
