@@ -110,7 +110,7 @@ public class Room {
     
 	@Override
 	public String toString() {
-		return "Room n°" + roomNumber + " [" + size + " persons] " + Double.parseDouble(new DecimalFormat("##.##").format(price)) + "€";
+		return "Room n°" + roomNumber + " [" + size + " persons] " + price + "€";
 	}
 
 }

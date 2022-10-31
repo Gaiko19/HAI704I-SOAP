@@ -230,6 +230,7 @@ public class connectedUser extends JDialog {
 				String loginUsername = loginUser.getText();
 				String loginPassword = passwordUser.getText();
 				String agencyId = "";
+				Agency agency2 = new Agency();
 				agencyId = agencyInput.getText();
 				Agency agency = null;
 				if(agencyId.equals("HotelAdvisor.com")) {

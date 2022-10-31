@@ -129,10 +129,10 @@ public class AgencyGUI extends JFrame {
 					} else {
 						connectedUser.agencyDisplay.setText("DuoVago");
 					}
-			        connectedUser.nameInput.setText(client.getName());
-			        connectedUser.agencyInput.setText(client.getName());
-			        connectedUser.loginUser.setText(client.getName());
-			        connectedUser.passwordUser.setText(client.getName());
+			        connectedUser.nameInput.setText(client.getFirstname() + " " + client.getName());
+			        connectedUser.agencyInput.setText(agencyId);
+			        connectedUser.loginUser.setText(loginUsername);
+			        connectedUser.passwordUser.setText(loginPassword);
 			        connectedUser.setVisible(true);
 				}
 			}
