@@ -51,7 +51,7 @@ public class Finder {
 	}
 
 	public static void main(String[] args) {
-		/*ArrayList<Hotel> hotels = new ArrayList<>();
+		ArrayList<Hotel> hotels = new ArrayList<>();
 		
 		// Init Hotel 1
 		Position pos1 = new Position("Montpellier", "France", "Avenue de Barcelone", 12);
@@ -141,7 +141,7 @@ public class Finder {
 		}
 		
 		
-*/
+
 	}
 
 }
