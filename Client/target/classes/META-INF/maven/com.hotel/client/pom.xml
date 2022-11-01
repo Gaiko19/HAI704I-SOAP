@@ -33,4 +33,24 @@
 		    <version>5.1.39</version>
 		</dependency>
 	</dependencies>
+	<build>
+	    <plugins>
+	        <plugin>
+	            <groupId>org.codehaus.mojo</groupId>
+	            <artifactId>exec-maven-plugin</artifactId>
+	            <version>3.0.0</version>
+	            <executions>
+	                <execution>
+	                    <id>MainAgency</id>
+	                    <goals>
+	                        <goal>java</goal>
+	                    </goals>
+	                    <configuration>
+	                        <mainClass>client.MainAgency</mainClass>
+	                    </configuration>
+	             </execution>
+	       	</executions>
+			</plugin>
+		</plugins>
+	</build>
 </project>
