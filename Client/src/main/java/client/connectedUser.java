@@ -201,7 +201,7 @@ public class connectedUser extends JDialog {
 		JComboBox hotelChoice = new JComboBox();
 		hotelChoice.setModel(new DefaultComboBoxModel(new String[] {}));
 		hotelChoice.setVisible(false);
-		hotelChoice.setBounds(34, 92, 130, 27);
+		hotelChoice.setBounds(34, 92, 169, 27);
 		contentPanel.add(hotelChoice);
 		
 		JLabel roomInfosLabel = new JLabel("Room Infos");
@@ -215,6 +215,11 @@ public class connectedUser extends JDialog {
 		infosSeparator.setVisible(false);
 		infosSeparator.setBounds(294, 92, 100, 12);
 		contentPanel.add(infosSeparator);
+
+		JComboBox roomChoice = new JComboBox();
+		roomChoice.setVisible(false);
+		roomChoice.setBounds(34, 149, 169, 27);
+		contentPanel.add(roomChoice);
 				
 		searchBtn = new JButton("Search");
 		searchBtn.addActionListener(new ActionListener() {
@@ -261,6 +266,10 @@ public class connectedUser extends JDialog {
 						cpt++;
 					}
 					
+					for (Hotel hotel : hotels.keySet()) {
+						roomChoice.addItem(hotel.getRooms());
+					}
+										
 					foundHotelInput.setText(String.valueOf(cpt));
 					
 					destinationInput.setVisible(false);
@@ -293,6 +302,7 @@ public class connectedUser extends JDialog {
 					roomInfosLabel.setVisible(true);
 					infosSeparator.setVisible(true);
 					roomImage.setVisible(true);
+					roomChoice.setVisible(false);
 				}
 			}
 		});
@@ -376,11 +386,5 @@ public class connectedUser extends JDialog {
 		contentPanel.add(connectedBackgroundImage);
 		BufferedImage img = ImageIO.read(new URL("http://hotelfinder.sc1samo7154.universe.wf/blurImage_563x373.jpeg"));
 		connectedBackgroundImage.setIcon(new ImageIcon(img));
-		
-		
-		
-		
-		
-		
 	}
 }
