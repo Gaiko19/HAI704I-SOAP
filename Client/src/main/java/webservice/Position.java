@@ -186,7 +186,7 @@ public class Position {
     
 	@Override
 	public String toString() {
-		return "Position : " + number + ", " + street + ", " + city + ", " + country + "\n";
+		return "Position : " + number + ", " + street + ", " + city + ", " + country;
 	}
 
 }

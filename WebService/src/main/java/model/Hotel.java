@@ -11,7 +11,8 @@ public class Hotel {
 	private double stars;
 	private ArrayList<Room> rooms;
 	private Position address;
-	private ArrayList<Reservation> resa;	
+	private ArrayList<Reservation> resa;
+	private String imageFolder;
 	
 	// Methods
 	public ArrayList<Reservation> getResa() {
@@ -54,13 +55,22 @@ public class Hotel {
 		this.address = address;
 	}
 	
+	public String getImageFolder() {
+		return imageFolder;
+	}
+	 
+	public void setImageFolder(String imageFolder) {
+		this.imageFolder = imageFolder;
+	}
+	
 	// Constructors
-	public Hotel(String name, double stars, ArrayList<Room> rooms, Position address) {
+	public Hotel(String name, double stars, ArrayList<Room> rooms, Position address, String imageFolder) {
 		this.name = name;
 		this.stars = stars;
 		this.rooms = rooms;
 		this.address = address;
 		this.resa = new ArrayList<Reservation>();
+		this.imageFolder = imageFolder;
 	}
 	public Hotel() {
 		this.name = "Undefined";
@@ -68,6 +78,7 @@ public class Hotel {
 		this.rooms = new ArrayList<>();
 		this.address = new Position();
 		this.resa = new ArrayList<Reservation>();
+		this.imageFolder = "Undefined";
 	}
 	
 

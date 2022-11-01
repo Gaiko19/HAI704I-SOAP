@@ -25,6 +25,7 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="resa" type="{http://service/}reservation" maxOccurs="unbounded" minOccurs="0"/&gt;
  *         &lt;element name="rooms" type="{http://service/}room" maxOccurs="unbounded" minOccurs="0"/&gt;
  *         &lt;element name="stars" type="{http://www.w3.org/2001/XMLSchema}double"/&gt;
+ *         &lt;element name="imageFolder" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
  *       &lt;/sequence&gt;
  *     &lt;/restriction&gt;
  *   &lt;/complexContent&gt;
@@ -39,7 +40,8 @@ import javax.xml.bind.annotation.XmlType;
     "name",
     "resa",
     "rooms",
-    "stars"
+    "stars",
+    "imageFolder"
 })
 public class Hotel {
 
@@ -50,6 +52,7 @@ public class Hotel {
     @XmlElement(nillable = true)
     protected List<Room> rooms;
     protected double stars;
+    protected String imageFolder;
 
     /**
      * Gets the value of the address property.
@@ -171,6 +174,30 @@ public class Hotel {
      */
     public void setStars(double value) {
         this.stars = value;
+    }
+    
+    /**
+     * Gets the value of the imageFolder property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getImageFolder() {
+        return imageFolder;
+    }
+
+    /**
+     * Sets the value of the imageFolder property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setImageFolder(String value) {
+        this.imageFolder = value;
     }
     
 	@Override

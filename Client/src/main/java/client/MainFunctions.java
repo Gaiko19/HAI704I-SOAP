@@ -1,5 +1,7 @@
 package client;
 
+import java.awt.Desktop;
+import java.net.URI;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -188,7 +190,8 @@ public class MainFunctions {
 			for (Entry<Hotel, Double> prox : hotels.entrySet()) {
 				Hotel hotel = prox.getKey();
 				hotelList.add(hotel);
-				System.out.println(hotel.getName() + " " + hotel.getStars() + "\n" + hotel.getAddress().toString());
+				String starsString = String.valueOf(Double.parseDouble(new DecimalFormat("##.##").format(hotel.getStars())));
+				System.out.println(hotel.getName() + " " + starsString + "\n" + hotel.getAddress().toString());
 				for(int j = 1; j <= hotel.getRooms().size(); j++) {
 					Room room = hotel.getRooms().get(j-1);
 					System.out.println("N°" + cpt + "-" + j + " : " + room.toString());
@@ -382,7 +385,54 @@ public class MainFunctions {
 	}
 	
 	public static void viewAll(Agency agency, Client client) {
-		System.out.println("Not yet working. Please try again in the next days.");
+		String choice = "n";
+		try {
+			Scanner textScanner = new Scanner(System.in);
+			HashMap<Hotel, Double> hotels = new HashMap<>();
+			HashMap<HotelService, Double> proxy = agency.getOffers();
+			for (Entry<HotelService, Double> prox : proxy.entrySet()) {
+				HotelService hotel = prox.getKey();
+					Hotel results = agency.searchRoom(hotel, "1970-06-01", "1970-06-01", 1, 0, 100000000);
+					if(!results.getRooms().isEmpty()) {
+						for (Room room : results.getRooms()) {
+							room.setPrice(room.getPrice() - (room.getPrice() / 100 ) * agency.getOffers().get(hotel));
+						}
+						hotels.put(results, prox.getValue());						
+					}
+			}
+			int cpt = 1;
+			for (Entry<Hotel, Double> prox : hotels.entrySet()) {
+				Hotel hotel = prox.getKey();
+				double bestPrice = -1;
+				for(Room room : hotel.getRooms()) {
+					if (bestPrice == -1) {
+						bestPrice = room.getPrice();
+					}
+					else if(room.getPrice() < bestPrice) {
+						bestPrice = room.getPrice();
+					}
+				}
+				double value = Double.parseDouble(new DecimalFormat("##.##").format(bestPrice));
+				String valueString = String.valueOf(value);
+				String starsString = String.valueOf(Double.parseDouble(new DecimalFormat("##.##").format(hotel.getStars())));
+				System.out.println(hotel.getName() + " " + starsString + "\n" + hotel.getAddress().toString());
+				System.out.println("Starting at "+ valueString + "€ !\n");
+				System.out.println("Tap [y] to see the hotel in pictures (anything else to continue)");
+				choice = textScanner.nextLine();
+				if(choice.equals("y")) {
+					String image = hotel.getImageFolder();
+					if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+					    Desktop.getDesktop().browse(new URI(image));
+					}
+					else {
+						System.err.println("Browsing is not supported. here is the link to see the pictures :\n"+ image);
+					}
+				}
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public static void getRecipe(Hotel hotel, Client client, Reservation resa) {

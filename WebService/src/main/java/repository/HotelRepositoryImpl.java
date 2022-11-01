@@ -22,6 +22,7 @@ public class HotelRepositoryImpl implements HotelRepository {
 	float rating = 0;
 	int pos = 0;
 	int id = 0;
+	String imageFolder = "";
 	Position adress = new Position();
 	ArrayList<Room> rooms = new ArrayList<>();
 	try{  
@@ -35,6 +36,7 @@ public class HotelRepositoryImpl implements HotelRepository {
 			rating = rs.getFloat("Rating"); 
 			pos= rs.getInt("Adress");
 			id = rs.getInt("ID");
+			imageFolder = rs.getString("imageFolder");
 		}
 		rs = stmt.executeQuery("select * from Position where id="+ pos);
 		if(rs.next()) {
@@ -63,7 +65,7 @@ public class HotelRepositoryImpl implements HotelRepository {
 			name,
 			rating,
 			rooms,
-			adress);
+			adress, imageFolder);
 	
 	hotel.setResa(new ArrayList<Reservation>());
 	}
