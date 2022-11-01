@@ -57,9 +57,9 @@ public class connectedUser extends JDialog {
 	static JTextField agencyDisplay;
 	private JTextField foundHotelInput;
 	private JLabel foundHotelLabel;
-	private JTextField hotelChoiceInput;
 	private JTextField roomChoiceInput;
 	private JLabel roomChoiceLabel;
+	private JLabel roomImage;
 
 	/**
 	 * Launch the application.
@@ -185,23 +185,11 @@ public class connectedUser extends JDialog {
 		maxPriceLabel.setBounds(224, 132, 86, 24);
 		contentPanel.add(maxPriceLabel);
 		
-		JTextArea hotelRoomDisplay = new JTextArea();
-		hotelRoomDisplay.setEditable(false);
-		hotelRoomDisplay.setVisible(false);
-		hotelRoomDisplay.setBounds(34, 133, 130, 117);
-		contentPanel.add(hotelRoomDisplay);
-		
-		JLabel hotelChoiceLabel = new JLabel("Hotel");
-		hotelChoiceLabel.setForeground(new Color(255, 255, 255));
-		hotelChoiceLabel.setVisible(false);
-		hotelChoiceLabel.setBounds(290, 53, 61, 16);
-		contentPanel.add(hotelChoiceLabel);
-		
-		JButton purchaseBtn = new JButton("Purchase");
+		JButton purchaseBtn = new JButton("Purchase this room");
 		purchaseBtn.setVisible(false);
 		purchaseBtn.setForeground(new Color(46, 139, 87));
 		purchaseBtn.setBackground(Color.WHITE);
-		purchaseBtn.setBounds(300, 133, 106, 26);
+		purchaseBtn.setBounds(34, 224, 176, 26);
 		contentPanel.add(purchaseBtn);
 		
 		JSeparator separator = new JSeparator();
@@ -215,6 +203,18 @@ public class connectedUser extends JDialog {
 		hotelChoice.setVisible(false);
 		hotelChoice.setBounds(34, 92, 130, 27);
 		contentPanel.add(hotelChoice);
+		
+		JLabel roomInfosLabel = new JLabel("Room Infos");
+		roomInfosLabel.setVisible(false);
+		roomInfosLabel.setForeground(new Color(255, 255, 255));
+		roomInfosLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		roomInfosLabel.setBounds(274, 78, 139, 16);
+		contentPanel.add(roomInfosLabel);
+		
+		JSeparator infosSeparator = new JSeparator();
+		infosSeparator.setVisible(false);
+		infosSeparator.setBounds(294, 92, 100, 12);
+		contentPanel.add(infosSeparator);
 				
 		searchBtn = new JButton("Search");
 		searchBtn.addActionListener(new ActionListener() {
@@ -283,14 +283,16 @@ public class connectedUser extends JDialog {
 					
 					foundHotelInput.setVisible(true);
 					foundHotelLabel.setVisible(true);
-					hotelRoomDisplay.setVisible(true);
-					hotelChoiceLabel.setVisible(true);
 					purchaseBtn.setVisible(true);
 					separator.setVisible(true);
 					hotelChoice.setVisible(true);
-					hotelChoiceInput.setVisible(true);
 					roomChoiceInput.setVisible(true);
 					roomChoiceLabel.setVisible(true);
+				
+					roomChoiceLabel.setVisible(true);
+					roomInfosLabel.setVisible(true);
+					infosSeparator.setVisible(true);
+					roomImage.setVisible(true);
 				}
 			}
 		});
@@ -348,28 +350,37 @@ public class connectedUser extends JDialog {
 		foundHotelLabel.setBounds(34, 49, 116, 24);
 		contentPanel.add(foundHotelLabel);
 		
-		hotelChoiceInput = new JTextField();
-		hotelChoiceInput.setVisible(false);
-		hotelChoiceInput.setColumns(10);
-		hotelChoiceInput.setBounds(331, 48, 40, 26);
-		contentPanel.add(hotelChoiceInput);
-		
 		roomChoiceInput = new JTextField();
 		roomChoiceInput.setVisible(false);
 		roomChoiceInput.setColumns(10);
-		roomChoiceInput.setBounds(383, 73, 40, 26);
+		roomChoiceInput.setBounds(366, 44, 40, 26);
 		contentPanel.add(roomChoiceInput);
+		roomChoiceInput.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+		roomChoiceInput.setBackground(new java.awt.Color(0, 0, 0, 1));
 		
 		roomChoiceLabel = new JLabel("Room Number");
+		roomChoiceLabel.setVisible(false);
 		roomChoiceLabel.setForeground(new Color(255, 255, 255));
 		roomChoiceLabel.setVisible(false);
-		roomChoiceLabel.setBounds(290, 78, 92, 16);
+		roomChoiceLabel.setBounds(266, 49, 92, 16);
 		contentPanel.add(roomChoiceLabel);
+		
+		roomImage = new JLabel("");
+		roomImage.setVisible(false);
+		roomImage.setIcon(new ImageIcon("/Users/macbook/Desktop/HAI704I-SOAP/mediaGUI/HotelAdvisor.com_450x231.jpg"));
+		roomImage.setBounds(255, 111, 176, 78);
+		contentPanel.add(roomImage);
 		
 		JLabel connectedBackgroundImage = new JLabel("");
 		connectedBackgroundImage.setBounds(0, 36, 450, 236);
 		contentPanel.add(connectedBackgroundImage);
 		BufferedImage img = ImageIO.read(new URL("http://hotelfinder.sc1samo7154.universe.wf/blurImage_563x373.jpeg"));
 		connectedBackgroundImage.setIcon(new ImageIcon(img));
+		
+		
+		
+		
+		
+		
 	}
 }
