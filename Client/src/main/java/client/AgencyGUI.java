@@ -29,8 +29,8 @@ import javax.swing.DefaultComboBoxModel;
 public class AgencyGUI extends JFrame {
 
 	private JPanel contentPane;
-	private JTextField usernameInput;
-	private JPasswordField passwordInput;
+	JTextField usernameInput;
+	JPasswordField passwordInput;
 	private JTextField credentialAlert;
 
 	/**
@@ -166,6 +166,18 @@ public class AgencyGUI extends JFrame {
 		exitBtn.setBackground(new Color(243, 254, 255));
 		exitBtn.setBounds(482, 338, 75, 29);
 		contentPane.add(exitBtn);
+		
+		JButton registerBtn = new JButton("Create an account");
+		registerBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				createAccount create = new createAccount();
+				create.setVisible(true);
+			}
+		});
+		registerBtn.setForeground(new Color(0, 0, 0));
+		registerBtn.setBackground(new Color(243, 254, 255));
+		registerBtn.setBounds(23, 338, 157, 29);
+		contentPane.add(registerBtn);
 		
 		JLabel backgroundImage = new JLabel("");
 		BufferedImage img = ImageIO.read(new URL("http://hotelfinder.sc1samo7154.universe.wf/blurImage_563x373.jpeg"));

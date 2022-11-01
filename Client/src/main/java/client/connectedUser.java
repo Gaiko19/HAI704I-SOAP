@@ -12,6 +12,7 @@ import javax.swing.border.EmptyBorder;
 
 import webservice.Client;
 import webservice.Hotel;
+import webservice.Room;
 
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
@@ -57,9 +58,11 @@ public class connectedUser extends JDialog {
 	static JTextField agencyDisplay;
 	private JTextField foundHotelInput;
 	private JLabel foundHotelLabel;
-	private JTextField roomChoiceInput;
-	private JLabel roomChoiceLabel;
 	private JLabel roomImage;
+	private JLabel purchasedName;
+	private JLabel purchasedNumber;
+	private JLabel lblNewLabel_2;
+	private JTextField purchasedRoomDisplay;
 
 	/**
 	 * Launch the application.
@@ -113,7 +116,7 @@ public class connectedUser extends JDialog {
 		contentPanel.add(destinationInput);
 		destinationInput.setColumns(10);
 		
-		JLabel startDateLabel = new JLabel("Start Date");
+		JLabel startDateLabel = new JLabel("Start Date *");
 		startDateLabel.setForeground(new Color(255, 255, 255));
 		startDateLabel.setBounds(34, 74, 86, 24);
 		contentPanel.add(startDateLabel);
@@ -155,17 +158,17 @@ public class connectedUser extends JDialog {
 		ratingInput.setBounds(142, 204, 130, 26);
 		contentPanel.add(ratingInput);
 		
-		endDateLabel = new JLabel("End Date");
+		endDateLabel = new JLabel("End Date *");
 		endDateLabel.setForeground(new Color(255, 255, 255));
 		endDateLabel.setBounds(34, 103, 86, 24);
 		contentPanel.add(endDateLabel);
 		
-		priceLabel = new JLabel("Price");
+		priceLabel = new JLabel("Price *");
 		priceLabel.setForeground(new Color(255, 255, 255));
 		priceLabel.setBounds(34, 132, 58, 24);
 		contentPanel.add(priceLabel);
 		
-		bedNumbersLabel = new JLabel("Bed Numbers");
+		bedNumbersLabel = new JLabel("Bed Numbers *");
 		bedNumbersLabel.setForeground(new Color(255, 255, 255));
 		bedNumbersLabel.setBounds(34, 168, 86, 24);
 		contentPanel.add(bedNumbersLabel);
@@ -180,17 +183,10 @@ public class connectedUser extends JDialog {
 		minPriceLabel.setBounds(104, 132, 86, 24);
 		contentPanel.add(minPriceLabel);
 		
-		maxPriceLabel = new JLabel("Max");
+		maxPriceLabel = new JLabel("Max *");
 		maxPriceLabel.setForeground(new Color(255, 255, 255));
 		maxPriceLabel.setBounds(224, 132, 86, 24);
 		contentPanel.add(maxPriceLabel);
-		
-		JButton purchaseBtn = new JButton("Purchase this room");
-		purchaseBtn.setVisible(false);
-		purchaseBtn.setForeground(new Color(46, 139, 87));
-		purchaseBtn.setBackground(Color.WHITE);
-		purchaseBtn.setBounds(34, 224, 176, 26);
-		contentPanel.add(purchaseBtn);
 		
 		JSeparator separator = new JSeparator();
 		separator.setVisible(false);
@@ -198,28 +194,150 @@ public class connectedUser extends JDialog {
 		separator.setBounds(224, 49, 19, 201);
 		contentPanel.add(separator);
 		
-		JComboBox hotelChoice = new JComboBox();
-		hotelChoice.setModel(new DefaultComboBoxModel(new String[] {}));
-		hotelChoice.setVisible(false);
-		hotelChoice.setBounds(34, 92, 169, 27);
-		contentPanel.add(hotelChoice);
-		
-		JLabel roomInfosLabel = new JLabel("Room Infos");
+		JLabel roomInfosLabel = new JLabel("Room Image");
 		roomInfosLabel.setVisible(false);
 		roomInfosLabel.setForeground(new Color(255, 255, 255));
 		roomInfosLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		roomInfosLabel.setBounds(274, 78, 139, 16);
+		roomInfosLabel.setBounds(274, 58, 139, 16);
 		contentPanel.add(roomInfosLabel);
 		
 		JSeparator infosSeparator = new JSeparator();
 		infosSeparator.setVisible(false);
-		infosSeparator.setBounds(294, 92, 100, 12);
+		infosSeparator.setBounds(294, 86, 100, 12);
 		contentPanel.add(infosSeparator);
+		
+		JComboBox hotelChoice = new JComboBox();
+		hotelChoice.setMaximumRowCount(30);
+		hotelChoice.setModel(new DefaultComboBoxModel(new String[] {}));
+		hotelChoice.setVisible(false);
+		hotelChoice.setBounds(34, 92, 169, 27);
+		contentPanel.add(hotelChoice);
 
 		JComboBox roomChoice = new JComboBox();
+		roomChoice.setMaximumRowCount(30);
 		roomChoice.setVisible(false);
-		roomChoice.setBounds(34, 149, 169, 27);
+		roomChoice.setBounds(34, 132, 169, 27);
 		contentPanel.add(roomChoice);
+		
+		JButton returnToSearch = new JButton("Back");
+		
+		JButton purchaseBtn = new JButton("Purchase this room");
+		purchaseBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String city = destinationInput.getText();
+				String startDate = startDateInput.getText();
+				String endDate = endDateInput.getText();
+				int bedNumbers = Integer.valueOf(bedNumbersInput.getText());
+				int minPrice;
+				if(minPriceInput.getText().length() != 0) {
+					minPrice = Integer.valueOf(minPriceInput.getText());
+				} else {
+					minPrice = 0;
+				}
+				int maxPrice = Integer.valueOf(maxPriceInput.getText());
+				Double rating;
+				if(minPriceInput.getText().length() != 0) {
+					rating = Double.valueOf(ratingInput.getText());
+				} else {
+					rating = 0.0;
+				}
+				String loginUsername = loginUser.getText();
+				String loginPassword = passwordUser.getText();
+				String agencyId = "";
+				Agency agency2 = new Agency();
+				agencyId = agencyInput.getText();
+				Agency agency = null;
+				if(agencyId.equals("HotelAdvisor.com")) {
+					agency = MainFunctions.MakeAgence(1);
+				} else if (agencyId.equals("Hotel.net")) {
+					agency = MainFunctions.MakeAgence(2);
+				} else {
+					agency = MainFunctions.MakeAgence(3);
+				}
+				Client client = null;
+				client = MainFunctions.connectClient(loginUsername, loginPassword, agency);
+				
+				if(client == null) {
+					connectedUser.this.dispose();
+				}
+				
+				HashMap<Hotel, Double> hotels = MainFunctions.research(agency, city, bedNumbers, startDate, endDate, minPrice, maxPrice, rating);
+				
+				String selectedHotel = (String)hotelChoice.getSelectedItem();
+				for (Hotel key : hotels.keySet()) {
+					if(key.getName().equals(selectedHotel)) {
+						for(Room room : key.getRooms()) {
+							roomChoice.addItem(room);
+						}
+					}
+				}
+				
+				foundHotelInput.setVisible(false);
+				foundHotelLabel.setVisible(false);
+				purchaseBtn.setVisible(false);
+				separator.setVisible(false);
+				hotelChoice.setVisible(false);
+				
+				roomInfosLabel.setVisible(false);
+				infosSeparator.setVisible(false);
+				roomImage.setVisible(false);
+				roomChoice.setVisible(false);
+				returnToSearch.setVisible(false);
+				purchasedName.setVisible(true);
+				purchasedNumber.setVisible(true);
+				purchasedRoomDisplay.setVisible(true);
+				purchasedName.setText(client.getFirstname() + " " + client.getName());
+				purchasedNumber.setText(client.getTelNumber());
+				//purchasedRoomDisplay.setText((String)roomChoice.getSelectedItem());
+			}
+		});
+		purchaseBtn.setVisible(false);
+		purchaseBtn.setForeground(new Color(46, 139, 87));
+		purchaseBtn.setBackground(Color.WHITE);
+		purchaseBtn.setBounds(34, 178, 176, 26);
+		contentPanel.add(purchaseBtn);
+		
+		
+		returnToSearch.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				destinationInput.setVisible(true);
+				startDateInput.setVisible(true);
+				endDateInput.setVisible(true);
+				bedNumbersInput.setVisible(true);
+				minPriceInput.setVisible(true);
+				maxPriceInput.setVisible(true);
+				ratingInput.setVisible(true);
+				searchBtn.setVisible(true);
+				
+				destinationLabel.setVisible(true);
+				startDateLabel.setVisible(true);
+				endDateLabel.setVisible(true);
+				bedNumbersLabel.setVisible(true);
+				minPriceLabel.setVisible(true);
+				maxPriceLabel.setVisible(true);
+				ratingLabel.setVisible(true);
+				priceLabel.setVisible(true);
+				
+				foundHotelInput.setVisible(false);
+				foundHotelLabel.setVisible(false);
+				purchaseBtn.setVisible(false);
+				separator.setVisible(false);
+				hotelChoice.setVisible(false);
+				
+				roomInfosLabel.setVisible(false);
+				infosSeparator.setVisible(false);
+				roomImage.setVisible(false);
+				roomChoice.setVisible(false);
+				returnToSearch.setVisible(false);
+				
+				
+			}
+		});
+		returnToSearch.setVisible(false);
+		returnToSearch.setForeground(new Color(255, 64, 43));
+		returnToSearch.setBackground(Color.WHITE);
+		returnToSearch.setBounds(66, 229, 106, 26);
+		contentPanel.add(returnToSearch);
 				
 		searchBtn = new JButton("Search");
 		searchBtn.addActionListener(new ActionListener() {
@@ -228,9 +346,19 @@ public class connectedUser extends JDialog {
 				String startDate = startDateInput.getText();
 				String endDate = endDateInput.getText();
 				int bedNumbers = Integer.valueOf(bedNumbersInput.getText());
-				int minPrice = Integer.valueOf(minPriceInput.getText());
+				int minPrice;
+				if(minPriceInput.getText().length() != 0) {
+					minPrice = Integer.valueOf(minPriceInput.getText());
+				} else {
+					minPrice = 0;
+				}
 				int maxPrice = Integer.valueOf(maxPriceInput.getText());
-				Double rating = Double.valueOf(ratingInput.getText());
+				Double rating;
+				if(minPriceInput.getText().length() != 0) {
+					rating = Double.valueOf(ratingInput.getText());
+				} else {
+					rating = 0.0;
+				}
 				
 				String loginUsername = loginUser.getText();
 				String loginPassword = passwordUser.getText();
@@ -266,9 +394,42 @@ public class connectedUser extends JDialog {
 						cpt++;
 					}
 					
-					for (Hotel hotel : hotels.keySet()) {
-						roomChoice.addItem(hotel.getRooms());
+					String selectedHotel = (String)hotelChoice.getSelectedItem();
+			    	String selectedRoom = (String)roomChoice.getSelectedItem();
+					roomChoice.removeAllItems();
+					
+					for (Hotel key : hotels.keySet()) {
+						if(key.getName().equals(selectedHotel)) {
+							for(Room room : key.getRooms()) {
+								roomChoice.addItem(room);
+							}
+						}
 					}
+					
+					hotelChoice.addActionListener (new ActionListener () {
+					    public void actionPerformed(ActionEvent e) {
+					    	String selectedHotel = (String)hotelChoice.getSelectedItem();
+					    	roomChoice.removeAllItems();
+							
+							for (Hotel key : hotels.keySet()) {
+								if(key.getName().equals(selectedHotel)) {
+									/*BufferedImage roomImg = null;
+									try {
+										roomImg = ImageIO.read(new URL(key.getImageFolder()));
+									} catch (MalformedURLException e1) {
+										e1.printStackTrace();
+									} catch (IOException e1) {
+										e1.printStackTrace();
+									}
+									roomImage.setIcon(new ImageIcon(roomImg));*/
+									for(Room room : key.getRooms()) {
+										roomChoice.addItem(room);
+										
+									}
+								}
+							}
+					    }
+					});
 										
 					foundHotelInput.setText(String.valueOf(cpt));
 					
@@ -295,14 +456,12 @@ public class connectedUser extends JDialog {
 					purchaseBtn.setVisible(true);
 					separator.setVisible(true);
 					hotelChoice.setVisible(true);
-					roomChoiceInput.setVisible(true);
-					roomChoiceLabel.setVisible(true);
-				
-					roomChoiceLabel.setVisible(true);
+					
 					roomInfosLabel.setVisible(true);
 					infosSeparator.setVisible(true);
 					roomImage.setVisible(true);
-					roomChoice.setVisible(false);
+					roomChoice.setVisible(true);
+					returnToSearch.setVisible(true);
 				}
 			}
 		});
@@ -360,31 +519,46 @@ public class connectedUser extends JDialog {
 		foundHotelLabel.setBounds(34, 49, 116, 24);
 		contentPanel.add(foundHotelLabel);
 		
-		roomChoiceInput = new JTextField();
-		roomChoiceInput.setVisible(false);
-		roomChoiceInput.setColumns(10);
-		roomChoiceInput.setBounds(366, 44, 40, 26);
-		contentPanel.add(roomChoiceInput);
-		roomChoiceInput.setBorder(javax.swing.BorderFactory.createEmptyBorder());
-		roomChoiceInput.setBackground(new java.awt.Color(0, 0, 0, 1));
-		
-		roomChoiceLabel = new JLabel("Room Number");
-		roomChoiceLabel.setVisible(false);
-		roomChoiceLabel.setForeground(new Color(255, 255, 255));
-		roomChoiceLabel.setVisible(false);
-		roomChoiceLabel.setBounds(266, 49, 92, 16);
-		contentPanel.add(roomChoiceLabel);
-		
 		roomImage = new JLabel("");
 		roomImage.setVisible(false);
 		roomImage.setIcon(new ImageIcon("/Users/macbook/Desktop/HAI704I-SOAP/mediaGUI/HotelAdvisor.com_450x231.jpg"));
 		roomImage.setBounds(255, 111, 176, 78);
 		contentPanel.add(roomImage);
 		
+		purchasedName = new JLabel("");
+		purchasedName.setForeground(new Color(255, 255, 255));
+		purchasedName.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+		purchasedName.setBackground(new java.awt.Color(0, 0, 0, 1));
+		purchasedName.setHorizontalAlignment(SwingConstants.CENTER);
+		purchasedName.setVisible(false);
+		purchasedName.setBounds(166, 82, 133, 16);
+		contentPanel.add(purchasedName);
+		
+		purchasedNumber = new JLabel("");
+		purchasedNumber.setForeground(new Color(255, 255, 255));
+		purchasedNumber.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+		purchasedNumber.setBackground(new java.awt.Color(0, 0, 0, 1));
+		purchasedNumber.setHorizontalAlignment(SwingConstants.CENTER);
+		purchasedNumber.setVisible(false);
+		purchasedNumber.setBounds(166, 112, 133, 16);
+		contentPanel.add(purchasedNumber);
+		
+		purchasedRoomDisplay = new JTextField();
+		purchasedRoomDisplay.setForeground(new Color(255, 255, 255));
+		purchasedRoomDisplay.setVisible(false);
+		purchasedRoomDisplay.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+		purchasedRoomDisplay.setBackground(new java.awt.Color(0, 0, 0, 1));
+		purchasedRoomDisplay.setHorizontalAlignment(SwingConstants.CENTER);
+		purchasedRoomDisplay.setEditable(false);
+		purchasedRoomDisplay.setColumns(10);
+		purchasedRoomDisplay.setBounds(34, 177, 379, 26);
+		contentPanel.add(purchasedRoomDisplay);
+		
 		JLabel connectedBackgroundImage = new JLabel("");
 		connectedBackgroundImage.setBounds(0, 36, 450, 236);
 		contentPanel.add(connectedBackgroundImage);
 		BufferedImage img = ImageIO.read(new URL("http://hotelfinder.sc1samo7154.universe.wf/blurImage_563x373.jpeg"));
 		connectedBackgroundImage.setIcon(new ImageIcon(img));
+	
 	}
 }
