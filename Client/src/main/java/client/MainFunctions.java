@@ -36,7 +36,7 @@ public class MainFunctions {
 		try {  
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con=DriverManager.getConnection(
-			"jdbc:mysql://dakota.o2switch.net:3306/sc1samo7154_hotelfinderdb","sc1samo7154_hotelfinder","hotelfinderdb");
+			"jdbc:mysql://dakota.o2switch.net:3306/sc1samo7154_hotelfinderdb","sc1samo7154_hotelviewer","hotelfinderviewer");
 			Statement stmt=con.createStatement();
 			ResultSet rs=stmt.executeQuery("select * from Agency where id="+ ID);
 			if(rs.next()) {
@@ -314,7 +314,7 @@ public class MainFunctions {
 							try{  
 								Class.forName("com.mysql.jdbc.Driver");
 								Connection con=DriverManager.getConnection(
-								"jdbc:mysql://dakota.o2switch.net:3306/sc1samo7154_hotelfinderdb","sc1samo7154_hotelfinder","hotelfinderdb");
+								"jdbc:mysql://dakota.o2switch.net:3306/sc1samo7154_hotelfinderdb","sc1samo7154_hotelupdate","hotelupdate34");
 								Statement stmt=con.createStatement();
 								ResultSet rs = stmt.executeQuery("SELECT ID FROM Client WHERE "
 										+ "Name='"+client.getName() +"' AND Firstname='" + client.getFirstname()+"'");
