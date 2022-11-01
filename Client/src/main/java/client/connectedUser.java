@@ -288,7 +288,7 @@ public class connectedUser extends JDialog {
 				purchasedRoomDisplay.setVisible(true);
 				purchasedName.setText(client.getFirstname() + " " + client.getName());
 				purchasedNumber.setText(client.getTelNumber());
-				//purchasedRoomDisplay.setText((String)roomChoice.getSelectedItem());
+				purchasedRoomDisplay.setText(roomChoice.getSelectedItem().toString());
 			}
 		});
 		purchaseBtn.setVisible(false);
@@ -551,7 +551,7 @@ public class connectedUser extends JDialog {
 		purchasedRoomDisplay.setHorizontalAlignment(SwingConstants.CENTER);
 		purchasedRoomDisplay.setEditable(false);
 		purchasedRoomDisplay.setColumns(10);
-		purchasedRoomDisplay.setBounds(34, 177, 379, 26);
+		purchasedRoomDisplay.setBounds(34, 153, 379, 26);
 		contentPanel.add(purchasedRoomDisplay);
 		
 		JLabel connectedBackgroundImage = new JLabel("");
