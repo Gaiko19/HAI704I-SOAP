@@ -35,6 +35,8 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.awt.event.ActionEvent;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
@@ -135,7 +137,6 @@ public class connectedUser extends JDialog {
 		contentPanel.add(destinationLabel);
 		
 		startDateInput = new JTextField();
-		startDateInput.setColumns(10);
 		startDateInput.setBounds(132, 73, 130, 26);
 		contentPanel.add(startDateInput);
 		startDateInput.setText("2022-01-01");
@@ -301,6 +302,7 @@ public class connectedUser extends JDialog {
 				roomImage.setVisible(false);
 				roomChoice.setVisible(false);
 				returnToSearch.setVisible(false);
+				hotelViewBtn.setVisible(false);
 				purchasedName.setVisible(true);
 				purchasedNumber.setVisible(true);
 				purchasedRoomDisplay.setVisible(true);
@@ -387,6 +389,8 @@ public class connectedUser extends JDialog {
 				roomImage.setVisible(false);
 				roomChoice.setVisible(false);
 				returnToSearch.setVisible(false);
+				hotelViewBtn.setVisible(false);
+				
 				
 			}
 		});
@@ -446,6 +450,19 @@ public class connectedUser extends JDialog {
 				} else {
 					hotelChoice.removeAllItems();
 					int cpt = 0;
+					Hotel firstImage = (Hotel) hotels.keySet().toArray()[0];
+					BufferedImage roomImg = null;
+					try {
+						roomImg = ImageIO.read(new URL(firstImage.getImageFolder() + "/" + "0" + ".jpg"));
+						if(roomImg == null) {
+							roomImg = ImageIO.read(new URL("http://hotelfinder.sc1samo7154.universe.wf/blurImage_563x373.jpeg"));
+						}
+					} catch (MalformedURLException e1) {
+						e1.printStackTrace();
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
+					roomImage.setIcon(new ImageIcon(roomImg));
 					for (Hotel key : hotels.keySet()) {
 						hotelChoice.addItem(key.getName());
 						cpt++;
@@ -471,6 +488,18 @@ public class connectedUser extends JDialog {
 								if(key.getName().equals(selectedHotel)) {
 									for(Room room : key.getRooms()) {
 										roomChoice.addItem(room);
+										BufferedImage roomImg = null;
+										try {
+											roomImg = ImageIO.read(new URL(key.getImageFolder() + "/" + "0" + ".jpg"));
+											if(roomImg == null) {
+												roomImg = ImageIO.read(new URL("http://hotelfinder.sc1samo7154.universe.wf/blurImage_563x373.jpeg"));
+											}
+										} catch (MalformedURLException e1) {
+											e1.printStackTrace();
+										} catch (IOException e1) {
+											e1.printStackTrace();
+										}
+										roomImage.setIcon(new ImageIcon(roomImg));
 									}
 								}
 							}
@@ -481,21 +510,31 @@ public class connectedUser extends JDialog {
 					    public void actionPerformed(ActionEvent e) {
 							
 							String selectedHotel = (String)hotelChoice.getSelectedItem();
+							String selectedRoom = String.valueOf(roomChoice.getSelectedItem());
+							
+							String number = "0";
+							Matcher m = Pattern.compile("[^0-9]*([0-9]+).*").matcher(selectedRoom);
+							if (m.matches()) {
+							    number = m.group(1);
+							}
+							
 							for (Hotel key : hotels.keySet()) {
 								if(key.getName().equals(selectedHotel)) {
 									for(Room room : key.getRooms()) {
-										BufferedImage roomImg = null;
-										try {
-											roomImg = ImageIO.read(new URL(key.getImageFolder() + "/" + String.valueOf(room.getRoomNumber()) + ".jpg"));
-											if(roomImg == null) {
-												roomImg = ImageIO.read(new URL("http://hotelfinder.sc1samo7154.universe.wf/blurImage_563x373.jpeg"));
+										if(room.getRoomNumber() == (Integer.parseInt(number))) {
+											BufferedImage roomImg = null;
+											try {
+												roomImg = ImageIO.read(new URL(key.getImageFolder() + "/" + String.valueOf(room.getRoomNumber()) + ".jpg"));
+												if(roomImg == null) {
+													roomImg = ImageIO.read(new URL("http://hotelfinder.sc1samo7154.universe.wf/blurImage_563x373.jpeg"));
+												}
+											} catch (MalformedURLException e1) {
+												e1.printStackTrace();
+											} catch (IOException e1) {
+												e1.printStackTrace();
 											}
-										} catch (MalformedURLException e1) {
-											e1.printStackTrace();
-										} catch (IOException e1) {
-											e1.printStackTrace();
+											roomImage.setIcon(new ImageIcon(roomImg));
 										}
-										roomImage.setIcon(new ImageIcon(roomImg));
 									}
 								}
 							}
