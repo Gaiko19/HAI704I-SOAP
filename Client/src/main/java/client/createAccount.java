@@ -111,7 +111,7 @@ public class createAccount extends JFrame {
 		contentPane.add(phoneNumberInput);
 		
 		JComboBox comboBox = new JComboBox();
-		comboBox.setModel(new DefaultComboBoxModel(new String[] {"HotelAdvisor.com", "Hotel.net", "DuoVago"}));
+		comboBox.setModel(new DefaultComboBoxModel(new String[] {"HotelAdvisor", "Hotel.net", "DuoVago"}));
 		comboBox.setBounds(296, 53, 133, 27);
 		contentPane.add(comboBox);
 		
@@ -158,8 +158,20 @@ public class createAccount extends JFrame {
 	                    ); // A FINIR
 	                    preparedStmt.execute();
 	                    
-	                    rs = stmt.executeQuery("SELECT ID FROM Agency WHERE "
-								+ "Name='" + (String)comboBox.getSelectedItem() + "'");
+	                    rs = stmt.executeQuery("SELECT ID FROM CreditCard WHERE "
+								+ "Number='" + cardNumber1.getText()+cardNumber2.getText()+cardNumber3.getText()+cardNumber4.getText() + "'");
+						int cardID = 0; 
+						if(rs.next()) {
+							cardID = rs.getInt("ID");
+					    }
+	                    
+                        preparedStmt = con.prepareStatement(
+                                "UPDATE `Client` SET `CreditCard` = '"+String.valueOf(cardID) +"' WHERE `Client`.`ID` =" +String.valueOf(clientID)
+	                    ); // A FINIR
+	                    preparedStmt.execute();
+	                    
+	                    String agencyName = comboBox.getSelectedItem().toString();
+	                    rs = stmt.executeQuery("SELECT ID FROM `Agency` WHERE `Name` LIKE '"+agencyName+"'");
 						int agencyID = 0; 
 						if(rs.next()) {
 							agencyID = rs.getInt("ID");
