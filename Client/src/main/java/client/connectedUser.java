@@ -67,6 +67,7 @@ public class connectedUser extends JDialog {
 	private JTextField purchasedRoomDisplay;
 	private JTextField purchasedHotelDisplay;
 	private JTextField purchasedDateDisplay;
+	private JTextField gpsDisplay;
 
 	/**
 	 * Launch the application.
@@ -297,6 +298,7 @@ public class connectedUser extends JDialog {
 				purchasedRoomDisplay.setVisible(true);
 				purchasedHotelDisplay.setVisible(true);
 				purchasedDateDisplay.setVisible(true);
+				gpsDisplay.setVisible(true);
 				
 				LocalDate ind = LocalDate.parse(startDate);
 				LocalDate oud = LocalDate.parse(endDate);
@@ -312,10 +314,23 @@ public class connectedUser extends JDialog {
 				
 				try {
 					if(MainFunctions.makeReservationGUI(agency, client, ind, oud, selectedR, selectedH, amount) == 1) {
+						
+						String gps = "";
+						try {
+							gps = GPSMaker.gpsEncoder(selectedH.getAddress().toString());
+						} catch (Exception exc) {
+							exc.printStackTrace();
+						}
+						String link = "";
+						if(gps !=null) {
+							String[] arr = gps.split(" ");
+							link = "http://maps.google.com/maps?z=12&t=m&q=loc:" + arr[0] + "+" + arr[1];
+						}
 						purchasedName.setText(client.getFirstname() + " " + client.getName());
 						purchasedNumber.setText(client.getTelNumber());
 						purchasedRoomDisplay.setText(roomChoice.getSelectedItem().toString());
 						purchasedHotelDisplay.setText(selectedH.getName() + " - Reduction : " + String.valueOf(amount));
+						gpsDisplay.setText("Voir l'hôtel : "+ link);
 						purchasedDateDisplay.setText("From : " + startDate + " to : " + endDate);
 					} else {
 						JOptionPane.showMessageDialog(null, 
@@ -621,6 +636,17 @@ public class connectedUser extends JDialog {
 		purchasedHotelDisplay.setBounds(34, 140, 379, 26);
 		contentPanel.add(purchasedHotelDisplay);
 		purchasedHotelDisplay.setColumns(10);
+		
+		gpsDisplay = new JTextField();
+		gpsDisplay.setHorizontalAlignment(SwingConstants.CENTER);
+		gpsDisplay.setVisible(false);
+		gpsDisplay.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+		gpsDisplay.setBackground(new java.awt.Color(0, 0, 0, 1));
+		gpsDisplay.setEditable(false);
+		gpsDisplay.setForeground(new Color(255, 255, 255));
+		gpsDisplay.setBounds(34, 190, 379, 26);
+		contentPanel.add(gpsDisplay);
+		gpsDisplay.setColumns(10);
 		
 		purchasedDateDisplay = new JTextField();
 		purchasedDateDisplay.setHorizontalAlignment(SwingConstants.CENTER);
