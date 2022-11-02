@@ -13,6 +13,7 @@ import javax.swing.border.EmptyBorder;
 import exception.ReservationException;
 import webservice.Client;
 import webservice.Hotel;
+import webservice.HotelService;
 import webservice.Room;
 
 import javax.swing.JSplitPane;
@@ -299,14 +300,22 @@ public class connectedUser extends JDialog {
 				
 				LocalDate ind = LocalDate.parse(startDate);
 				LocalDate oud = LocalDate.parse(endDate);
-				//Double amount = agency.getOffers();
+				HashMap<HotelService, Double> agencyOffers = agency.getOffers();
+				
+				Double amount = 0.0;
+				
+				for (HotelService element : agencyOffers.keySet()) {
+					if(element.getHotel().getName().equals(selectedH.getName())) {
+						amount = agencyOffers.get(element);
+					}
+				}
 				
 				try {
-					if(MainFunctions.makeReservationGUI(agency, client, ind, oud, selectedR, selectedH, 1.0) == 1) {
+					if(MainFunctions.makeReservationGUI(agency, client, ind, oud, selectedR, selectedH, amount) == 1) {
 						purchasedName.setText(client.getFirstname() + " " + client.getName());
 						purchasedNumber.setText(client.getTelNumber());
 						purchasedRoomDisplay.setText(roomChoice.getSelectedItem().toString());
-						purchasedHotelDisplay.setText(selectedH.getName());
+						purchasedHotelDisplay.setText(selectedH.getName() + " - Reduction : " + String.valueOf(amount));
 						purchasedDateDisplay.setText("From : " + startDate + " to : " + endDate);
 					} else {
 						JOptionPane.showMessageDialog(null, 
@@ -465,7 +474,7 @@ public class connectedUser extends JDialog {
 					    	BufferedImage roomImg = null;
 							try {
 								roomImg = ImageIO.read(new URL(selectedH.getImageFolder() + "/" + String.valueOf(selectedR.getRoomNumber()) + ".jpg"));
-								if( roomImg == null) {
+								if(roomImg == null) {
 									roomImg = ImageIO.read(new URL("http://hotelfinder.sc1samo7154.universe.wf/blurImage_563x373.jpeg"));
 								}
 							} catch (MalformedURLException e1) {
@@ -569,8 +578,8 @@ public class connectedUser extends JDialog {
 		
 		roomImage = new JLabel("");
 		roomImage.setVisible(false);
-		roomImage.setIcon(new ImageIcon("/Users/macbook/Desktop/HAI704I-SOAP/mediaGUI/HotelAdvisor.com_450x231.jpg"));
-		roomImage.setBounds(255, 111, 176, 78);
+		BufferedImage img = ImageIO.read(new URL("http://hotelfinder.sc1samo7154.universe.wf/blurImage_563x373.jpeg"));
+		roomImage.setIcon(new ImageIcon(img));
 		contentPanel.add(roomImage);
 		
 		purchasedName = new JLabel("");
@@ -626,8 +635,8 @@ public class connectedUser extends JDialog {
 		JLabel connectedBackgroundImage = new JLabel("");
 		connectedBackgroundImage.setBounds(0, 36, 450, 236);
 		contentPanel.add(connectedBackgroundImage);
-		BufferedImage img = ImageIO.read(new URL("http://hotelfinder.sc1samo7154.universe.wf/blurImage_563x373.jpeg"));
-		connectedBackgroundImage.setIcon(new ImageIcon(img));
+		BufferedImage img2 = ImageIO.read(new URL("http://hotelfinder.sc1samo7154.universe.wf/blurImage_563x373.jpeg"));
+		connectedBackgroundImage.setIcon(new ImageIcon(img2));
 	
 	}
 }
