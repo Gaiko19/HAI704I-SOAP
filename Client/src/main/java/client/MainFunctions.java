@@ -1,6 +1,9 @@
 package client;
 
 import java.awt.Desktop;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.sql.Connection;
@@ -18,6 +21,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Scanner;
+
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Chunk;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.FontFactory;
+import com.itextpdf.text.pdf.PdfWriter;
+
 import exception.ReservationException;
 import webservice.Client;
 import webservice.CreditCard;
@@ -451,6 +463,54 @@ public class MainFunctions {
 		System.out.println(Reservation.adaptiveDisplay("dateout", String.valueOf(resa.getOut()), size));
 		System.out.println(Reservation.adaptiveDisplay("price", String.valueOf(Double.parseDouble(new DecimalFormat("##.##").format(resa.getRoom().getPrice())))+"€", size));
 		System.out.println(Reservation.formRecipe(size, "footer"));
+		System.out.println("A pdf of your reservation have been generated.");
+		Document document = new Document();
+		try {
+			PdfWriter.getInstance(document, new FileOutputStream("reservation.pdf"));
+			document.open();
+			Font font = FontFactory.getFont(FontFactory.COURIER, 16, BaseColor.BLACK);
+			Chunk chunk = new Chunk("Hotel Finder - Thank you for your purchase !", font);
+			document.add(chunk);
+			chunk = new Chunk("Dear "+ client.getName() + " " + client.getFirstname() +
+					", please find in this file, all of the information concerning your reservation "
+					+ "on our website", font);
+			document.add(chunk);
+			String gps = "";
+			try {
+				gps = GPSMaker.gpsEncoder(hotel.getAddress().toString());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			String link = "";
+			if(gps !=null) {
+				String[] arr = gps.split(" ");
+				link = "http://maps.google.com/maps?z=12&t=m&q=loc:" + arr[0] + "+" + arr[1];
+			}
+			chunk = new Chunk("Reservation in "+ hotel.getName() +" room " + resa.getRoom().getRoomNumber() 
+					+ "\n Hotel adress: " + hotel.getAddress() +
+					"\n  " + link
+					+ "\nClient infos :\n" +
+					client.getFirstname()+", " + client.getName() +
+					"\nage: " + client.getAge() +
+					"\ntel: " + client.getTelNumber() +
+					"\n===========================================\n" +
+					"Payment infos :\n" +
+					client.getCc().getNumber() +
+					"TOTAL: "+ resa.getRoom().getPrice() +
+					"\n===========================================\n" +
+					"Reservation infos :\n" +
+					hotel.getName() + "\n" + resa.getRoom().getRoomNumber() +
+					"Size: " + resa.getRoom().getSize() +
+					"\nArriving date: "+resa.getIn().toString() +
+					"\nDeparture date: "+ resa.getOut().toString(), font);
+			document.add(chunk);
+			document.close();
+		} catch (FileNotFoundException e1) {
+			e1.printStackTrace();
+		} catch (DocumentException e1) {
+			e1.printStackTrace();
+		}
+
 	}
 
 }

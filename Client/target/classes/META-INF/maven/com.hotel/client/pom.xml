@@ -32,6 +32,16 @@
 		    <artifactId>mysql-connector-java</artifactId>
 		    <version>5.1.39</version>
 		</dependency>
+		<dependency>
+		    <groupId>com.itextpdf</groupId>
+		    <artifactId>itextpdf</artifactId>
+		    <version>5.5.10</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.apache.pdfbox</groupId>
+		    <artifactId>pdfbox</artifactId>
+		    <version>2.0.4</version>
+		</dependency>
 	</dependencies>
 	<build>
 	    <plugins>
@@ -49,8 +59,21 @@
 	                        <mainClass>client.MainAgency</mainClass>
 	                    </configuration>
 	             </execution>
+	                <execution>
+	                    <id>AgencyGUI</id>
+	                    <goals>
+	                        <goal>java</goal>
+	                    </goals>
+	                    <configuration>
+	                        <mainClass>client.AgencyGUI</mainClass>
+	                    </configuration>
+	             </execution>
 	       	</executions>
 			</plugin>
 		</plugins>
 	</build>
+	<properties>
+     <maven.compiler.source>1.8</maven.compiler.source>
+     <maven.compiler.target>1.8</maven.compiler.target>
+</properties>
 </project>
