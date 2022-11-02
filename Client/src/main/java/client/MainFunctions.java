@@ -384,6 +384,68 @@ public class MainFunctions {
 		}
 	}
 	
+	public static int makeReservationGUI(Agency agency, Client client, LocalDate in, LocalDate out, Room room, Hotel hotel, double amount) throws ReservationException {
+		Reservation resa = null;
+		try {
+				CreditCard cc = client.getCc();
+				if(cc == null || cc.getCvv() == "000") {
+					return 0;
+				}
+				else {
+						double creditCardBalance = client.getCc().getAmount();
+						double price = room.getPrice() - (room.getPrice() / 100) * amount;
+						if(creditCardBalance >= price) {
+							client.subMoney(price);
+							resa = new Reservation(client, in, out, room);
+							hotel.getResa().add(resa);
+							try{  
+								Class.forName("com.mysql.jdbc.Driver");
+								Connection con=DriverManager.getConnection(
+								"jdbc:mysql://dakota.o2switch.net:3306/sc1samo7154_hotelfinderdb","sc1samo7154_hotelupdate","hotelupdate34");
+								Statement stmt=con.createStatement();
+								ResultSet rs = stmt.executeQuery("SELECT ID FROM Client WHERE "
+										+ "Name='"+client.getName() +"' AND Firstname='" + client.getFirstname()+"'");
+								int clientID = 0; 
+								if(rs.next()) {
+									clientID = rs.getInt("ID");
+								}
+								
+								rs = stmt.executeQuery("SELECT ID FROM Hotel WHERE Name='"+hotel.getName()+"'");
+								int hotelID = 0;
+								if(rs.next()) {
+									hotelID = rs.getInt("ID");
+								}
+								
+								rs = stmt.executeQuery("SELECT ID FROM Room WHERE Number="+ room.getRoomNumber()+" AND Hotel="+hotelID);
+								int roomID = 0; 
+								if(rs.next()) {
+									roomID = rs.getInt("ID");
+								}
+
+								PreparedStatement preparedStmt = con.prepareStatement(
+										"INSERT INTO `Reservation` (`ID`, `Client`, `Room`, `DateIn`, `DateOut`, `Price`) "
+										+ "VALUES (NULL, " +clientID + ", '"+roomID+"', '"+ resa.getIn()+"', '"+ resa.getOut()+"', '"+ price +"')"
+										); // A FINIR
+								preparedStmt.execute();
+								
+								// Update solde client
+								preparedStmt = con.prepareStatement(
+										"UPDATE `CreditCard` SET `Amount` = '" + (client.getCc().getAmount()) + "' WHERE `CreditCard`.`ID` =" + clientID); // A FINIR
+								preparedStmt.execute();
+							}
+							catch (Exception e) {
+								e.printStackTrace();
+							}
+							return 1;
+						} else {return 0;}
+				}
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	
 	public static void viewAll(Agency agency, Client client) {
 		String choice = "n";
 		try {

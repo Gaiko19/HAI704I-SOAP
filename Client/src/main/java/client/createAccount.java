@@ -25,6 +25,7 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.awt.event.ActionEvent;
 
 public class createAccount extends JFrame {
@@ -42,6 +43,12 @@ public class createAccount extends JFrame {
 	private JTextField cvcInput;
 	private JTextField expirationDateInput;
 	private JLabel agencyChoiceLabel;
+	private JLabel adressLabel;
+	private JTextField adressInput;
+	private JLabel nameLabel;
+	private JLabel firstNameLabel;
+	private JTextField nameInput;
+	private JTextField firstNameInput;
 
 	/**
 	 * Launch the application.
@@ -103,10 +110,15 @@ public class createAccount extends JFrame {
 		phoneNumberInput.setBounds(139, 80, 130, 26);
 		contentPane.add(phoneNumberInput);
 		
+		JComboBox comboBox = new JComboBox();
+		comboBox.setModel(new DefaultComboBoxModel(new String[] {"HotelAdvisor.com", "Hotel.net", "DuoVago"}));
+		comboBox.setBounds(296, 53, 133, 27);
+		contentPane.add(comboBox);
+		
 		JButton registerBtn = new JButton("Register");
 		registerBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(userNameInput.getText().length()==0 || passwordInput.getText().length()==0 || phoneNumberInput.getText().length()==0 || 
+				if(adressInput.getText().length()==0 || firstNameInput.getText().length()==0 || nameInput.getText().length()==0 || userNameInput.getText().length()==0 || passwordInput.getText().length()==0 || phoneNumberInput.getText().length()==0 || 
 						ageInput.getText().length()==0) {
 					errorMessageInput.setText("Missing informations in user fields");
 				}
@@ -115,19 +127,55 @@ public class createAccount extends JFrame {
 					errorMessageInput.setText("Missing informations in credit card fields");
 				}
 				
-				if(userNameInput.getText().length()!=0 && passwordInput.getText().length()!=0 && phoneNumberInput.getText().length()!=0 && 
+				if(firstNameInput.getText().length()!=0 && adressInput.getText().length()!=0 && nameInput.getText().length()!=0 && userNameInput.getText().length()!=0 && passwordInput.getText().length()!=0 && phoneNumberInput.getText().length()!=0 && 
 						ageInput.getText().length()!=0 && cardNumber1.getText().length()==4 && cardNumber2.getText().length()==4 && cardNumber3.getText().length()==4 && 
-						cardNumber4.getText().length()==4 && cvcInput.getText().length()==3 && expirationDateInput.getText().length()==5) {
-					/*try {
+						cardNumber4.getText().length()==4 && cvcInput.getText().length()==3 && expirationDateInput.getText().length()==10) {
+					
+					try {
 						Class.forName("com.mysql.jdbc.Driver");
                         Connection con=DriverManager.getConnection(
-                        "jdbc:mysql://dakota.o2switch.net:3306/sc1samo7154_hotelfinderdb","leuser","sonmdp");
-                                Statement stmt=con.createStatement();
-                                PreparedStatement preparedStmt = con.prepareStatement(
-                                        "INSERT INTO Reservation (ID, Client, Room, DateIn, DateOut, Price) "
-                                + "VALUES (NULL, " + clientID + ", '" + roomID+"', '"+ resa.getIn()+"', '"+ resa.getOut()+"', '"+ price +"')"
+                        "jdbc:mysql://dakota.o2switch.net:3306/sc1samo7154_hotelfinderdb", "sc1samo7154_hotelupdate","hotelupdate34");
+                                java.sql.Statement stmt=con.createStatement();
+                                java.sql.PreparedStatement preparedStmt = con.prepareStatement(
+                                        "INSERT INTO Client (ID, Name, FirstName, Login, Password, Age, Adress, Tel, CreditCard) "
+                                + "VALUES (NULL, '" + nameInput.getText() + "', '" + firstNameInput.getText() + "', '"+ userNameInput.getText() +"', '"+ passwordInput.getText() + "', '"
+                                        		+ ageInput.getText()+ "', " + "NULL" + ", '" + phoneNumberInput.getText() + "', NULL" + ")"
                           ); // A FINIR
-						                                preparedStmt.execute();*/
+                          preparedStmt.execute();
+                          
+                          ResultSet rs = stmt.executeQuery("SELECT ID FROM Client WHERE "
+									+ "Name='"+ nameInput.getText() +"' AND Firstname='" + firstNameInput.getText() +"'");
+							int clientID = 0; 
+							if(rs.next()) {
+								clientID = rs.getInt("ID");
+						  }
+                         
+                          preparedStmt = con.prepareStatement(
+                                  "INSERT INTO CreditCard (ID, Number, CVV, Expiration, Amount, Client) "
+                          + "VALUES (NULL, '" + cardNumber1.getText()+cardNumber2.getText()+cardNumber3.getText()+cardNumber4.getText() + "', '" 
+                                		  + cvcInput.getText() + "', '" + expirationDateInput.getText() + "', " + 1000 + ", "
+                                  		 + clientID + ")"
+	                    ); // A FINIR
+	                    preparedStmt.execute();
+	                    
+	                    rs = stmt.executeQuery("SELECT ID FROM Agency WHERE "
+								+ "Name='" + (String)comboBox.getSelectedItem() + "'");
+						int agencyID = 0; 
+						if(rs.next()) {
+							agencyID = rs.getInt("ID");
+					    }
+	                    
+	                    preparedStmt = con.prepareStatement(
+                                "INSERT INTO ListeClients (ID, Client, Agency) "
+                        + "VALUES (NULL, " + clientID + ", " + agencyID + ")"
+	                    ); // A FINIR
+	                    preparedStmt.execute();
+                          
+					}
+					catch (Exception e1) {
+						e1.printStackTrace();
+					}
+					
 					JOptionPane.showMessageDialog(null, 
 	                        "Your account have been succesfuly created\n" + "Username : " + userNameInput.getText() + "\n" + 
 	                        		"Password : " + passwordInput.getText(), 
@@ -206,14 +254,37 @@ public class createAccount extends JFrame {
 		separator.setBounds(200, 151, 229, 12);
 		contentPane.add(separator);
 		
-		JComboBox comboBox = new JComboBox();
-		comboBox.setModel(new DefaultComboBoxModel(new String[] {"HotelAdvisor.com", "Hotel.net", "DuoVago"}));
-		comboBox.setBounds(296, 53, 133, 27);
-		contentPane.add(comboBox);
 		
 		agencyChoiceLabel = new JLabel("Agency");
 		agencyChoiceLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		agencyChoiceLabel.setBounds(305, 29, 106, 16);
 		contentPane.add(agencyChoiceLabel);
+		
+		adressLabel = new JLabel("Adress");
+		adressLabel.setBounds(143, 113, 106, 16);
+		contentPane.add(adressLabel);
+		
+		adressInput = new JTextField();
+		adressInput.setColumns(10);
+		adressInput.setBounds(200, 108, 229, 26);
+		contentPane.add(adressInput);
+		
+		nameLabel = new JLabel("Name");
+		nameLabel.setBounds(35, 6, 106, 16);
+		contentPane.add(nameLabel);
+		
+		firstNameLabel = new JLabel("FirstName");
+		firstNameLabel.setBounds(200, 6, 106, 16);
+		contentPane.add(firstNameLabel);
+		
+		nameInput = new JTextField();
+		nameInput.setColumns(10);
+		nameInput.setBounds(82, 1, 86, 26);
+		contentPane.add(nameInput);
+		
+		firstNameInput = new JTextField();
+		firstNameInput.setColumns(10);
+		firstNameInput.setBounds(281, 1, 97, 26);
+		contentPane.add(firstNameInput);
 	}
 }

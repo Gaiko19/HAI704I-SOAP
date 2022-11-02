@@ -10,6 +10,7 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import exception.ReservationException;
 import webservice.Client;
 import webservice.Hotel;
 import webservice.Room;
@@ -63,6 +64,8 @@ public class connectedUser extends JDialog {
 	private JLabel purchasedNumber;
 	private JLabel lblNewLabel_2;
 	private JTextField purchasedRoomDisplay;
+	private JTextField purchasedHotelDisplay;
+	private JTextField purchasedDateDisplay;
 
 	/**
 	 * Launch the application.
@@ -170,7 +173,7 @@ public class connectedUser extends JDialog {
 		
 		bedNumbersLabel = new JLabel("Bed Numbers *");
 		bedNumbersLabel.setForeground(new Color(255, 255, 255));
-		bedNumbersLabel.setBounds(34, 168, 86, 24);
+		bedNumbersLabel.setBounds(34, 168, 116, 24);
 		contentPanel.add(bedNumbersLabel);
 		
 		ratingLabel = new JLabel("Minimum Rating");
@@ -263,11 +266,16 @@ public class connectedUser extends JDialog {
 				
 				HashMap<Hotel, Double> hotels = MainFunctions.research(agency, city, bedNumbers, startDate, endDate, minPrice, maxPrice, rating);
 				
+				Hotel selectedH = null;
+				Room selectedR = null;
+				
 				String selectedHotel = (String)hotelChoice.getSelectedItem();
 				for (Hotel key : hotels.keySet()) {
 					if(key.getName().equals(selectedHotel)) {
 						for(Room room : key.getRooms()) {
 							roomChoice.addItem(room);
+							selectedH = key;
+							selectedR = room;
 						}
 					}
 				}
@@ -286,9 +294,29 @@ public class connectedUser extends JDialog {
 				purchasedName.setVisible(true);
 				purchasedNumber.setVisible(true);
 				purchasedRoomDisplay.setVisible(true);
-				purchasedName.setText(client.getFirstname() + " " + client.getName());
-				purchasedNumber.setText(client.getTelNumber());
-				purchasedRoomDisplay.setText(roomChoice.getSelectedItem().toString());
+				purchasedHotelDisplay.setVisible(true);
+				purchasedDateDisplay.setVisible(true);
+				
+				LocalDate ind = LocalDate.parse(startDate);
+				LocalDate oud = LocalDate.parse(endDate);
+				//Double amount = agency.getOffers();
+				
+				try {
+					if(MainFunctions.makeReservationGUI(agency, client, ind, oud, selectedR, selectedH, 1.0) == 1) {
+						purchasedName.setText(client.getFirstname() + " " + client.getName());
+						purchasedNumber.setText(client.getTelNumber());
+						purchasedRoomDisplay.setText(roomChoice.getSelectedItem().toString());
+						purchasedHotelDisplay.setText(selectedH.getName());
+						purchasedDateDisplay.setText("From : " + startDate + " to : " + endDate);
+					} else {
+						JOptionPane.showMessageDialog(null, 
+		                        "Purchased failed, not enough balance", 
+		                        "Purchased Failed", 
+		                        JOptionPane.WARNING_MESSAGE);
+					}
+				} catch (ReservationException e1) {
+					e1.printStackTrace();
+				}
 			}
 		});
 		purchaseBtn.setVisible(false);
@@ -329,7 +357,6 @@ public class connectedUser extends JDialog {
 				roomImage.setVisible(false);
 				roomChoice.setVisible(false);
 				returnToSearch.setVisible(false);
-				
 				
 			}
 		});
@@ -387,7 +414,7 @@ public class connectedUser extends JDialog {
 	                        "Research Exception", 
 	                        JOptionPane.WARNING_MESSAGE);
 				} else {
-					
+					hotelChoice.removeAllItems();
 					int cpt = 0;
 					for (Hotel key : hotels.keySet()) {
 						hotelChoice.addItem(key.getName());
@@ -395,7 +422,6 @@ public class connectedUser extends JDialog {
 					}
 					
 					String selectedHotel = (String)hotelChoice.getSelectedItem();
-			    	String selectedRoom = (String)roomChoice.getSelectedItem();
 					roomChoice.removeAllItems();
 					
 					for (Hotel key : hotels.keySet()) {
@@ -413,24 +439,46 @@ public class connectedUser extends JDialog {
 							
 							for (Hotel key : hotels.keySet()) {
 								if(key.getName().equals(selectedHotel)) {
-									/*BufferedImage roomImg = null;
-									try {
-										roomImg = ImageIO.read(new URL(key.getImageFolder()));
-									} catch (MalformedURLException e1) {
-										e1.printStackTrace();
-									} catch (IOException e1) {
-										e1.printStackTrace();
-									}
-									roomImage.setIcon(new ImageIcon(roomImg));*/
 									for(Room room : key.getRooms()) {
 										roomChoice.addItem(room);
-										
 									}
 								}
 							}
 					    }
 					});
-										
+					
+					roomChoice.addActionListener (new ActionListener () {
+					    public void actionPerformed(ActionEvent e) {
+					    	Hotel selectedH = null;
+							Room selectedR = null;
+							
+							String selectedHotel = (String)hotelChoice.getSelectedItem();
+							for (Hotel key : hotels.keySet()) {
+								if(key.getName().equals(selectedHotel)) {
+									for(Room room : key.getRooms()) {
+										selectedH = key;
+										selectedR = room;
+									}
+								}
+							}
+					    	
+					    	BufferedImage roomImg = null;
+							try {
+								roomImg = ImageIO.read(new URL(selectedH.getImageFolder() + "/" + String.valueOf(selectedR.getRoomNumber()) + ".jpg"));
+								if( roomImg == null) {
+									roomImg = ImageIO.read(new URL("http://hotelfinder.sc1samo7154.universe.wf/blurImage_563x373.jpeg"));
+								}
+							} catch (MalformedURLException e1) {
+								e1.printStackTrace();
+							} catch (IOException e1) {
+								e1.printStackTrace();
+							}
+							roomImage.setIcon(new ImageIcon(roomImg));
+					    }
+					});
+					
+					
+								
 					foundHotelInput.setText(String.valueOf(cpt));
 					
 					destinationInput.setVisible(false);
@@ -551,8 +599,29 @@ public class connectedUser extends JDialog {
 		purchasedRoomDisplay.setHorizontalAlignment(SwingConstants.CENTER);
 		purchasedRoomDisplay.setEditable(false);
 		purchasedRoomDisplay.setColumns(10);
-		purchasedRoomDisplay.setBounds(34, 153, 379, 26);
+		purchasedRoomDisplay.setBounds(34, 177, 379, 26);
 		contentPanel.add(purchasedRoomDisplay);
+		
+		purchasedHotelDisplay = new JTextField();
+		purchasedHotelDisplay.setHorizontalAlignment(SwingConstants.CENTER);
+		purchasedHotelDisplay.setVisible(false);
+		purchasedHotelDisplay.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+		purchasedHotelDisplay.setBackground(new java.awt.Color(0, 0, 0, 1));
+		purchasedHotelDisplay.setEditable(false);
+		purchasedHotelDisplay.setForeground(new Color(255, 255, 255));
+		purchasedHotelDisplay.setBounds(34, 140, 379, 26);
+		contentPanel.add(purchasedHotelDisplay);
+		purchasedHotelDisplay.setColumns(10);
+		
+		purchasedDateDisplay = new JTextField();
+		purchasedDateDisplay.setHorizontalAlignment(SwingConstants.CENTER);
+		purchasedDateDisplay.setVisible(false);
+		purchasedDateDisplay.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+		purchasedDateDisplay.setBackground(new java.awt.Color(0, 0, 0, 1));
+		purchasedDateDisplay.setForeground(new Color(255, 255, 255));
+		purchasedDateDisplay.setBounds(34, 216, 379, 26);
+		contentPanel.add(purchasedDateDisplay);
+		purchasedDateDisplay.setColumns(10);
 		
 		JLabel connectedBackgroundImage = new JLabel("");
 		connectedBackgroundImage.setBounds(0, 36, 450, 236);
