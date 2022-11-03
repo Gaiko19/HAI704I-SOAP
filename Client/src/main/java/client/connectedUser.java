@@ -197,6 +197,10 @@ public class connectedUser extends JDialog {
 		maxPriceLabel.setBounds(224, 132, 86, 24);
 		contentPanel.add(maxPriceLabel);
 		
+		JLabel searchMissingDisplay = new JLabel("");
+		searchMissingDisplay.setBounds(34, 240, 238, 16);
+		contentPanel.add(searchMissingDisplay);
+		
 		JSeparator separator = new JSeparator();
 		separator.setVisible(false);
 		separator.setOrientation(SwingConstants.VERTICAL);
@@ -296,6 +300,7 @@ public class connectedUser extends JDialog {
 				purchaseBtn.setVisible(false);
 				separator.setVisible(false);
 				hotelChoice.setVisible(false);
+				searchMissingDisplay.setVisible(false);
 				
 				roomInfosLabel.setVisible(false);
 				infosSeparator.setVisible(false);
@@ -377,6 +382,7 @@ public class connectedUser extends JDialog {
 				maxPriceLabel.setVisible(true);
 				ratingLabel.setVisible(true);
 				priceLabel.setVisible(true);
+				searchMissingDisplay.setVisible(true);
 				
 				foundHotelInput.setVisible(false);
 				foundHotelLabel.setVisible(false);
@@ -441,90 +447,59 @@ public class connectedUser extends JDialog {
 					connectedUser.this.dispose();
 				}
 				
-				HashMap<Hotel, Double> hotels = MainFunctions.research(agency, city, bedNumbers, startDate, endDate, minPrice, maxPrice, rating);
-				if(hotels.isEmpty()) {
-					JOptionPane.showMessageDialog(null, 
-	                        "Erreur, aucune correspondance", 
-	                        "Research Exception", 
-	                        JOptionPane.WARNING_MESSAGE);
-				} else {
-					hotelChoice.removeAllItems();
-					int cpt = 0;
-					Hotel firstImage = (Hotel) hotels.keySet().toArray()[0];
-					BufferedImage roomImg = null;
-					try {
-						roomImg = ImageIO.read(new URL(firstImage.getImageFolder() + "/" + "0" + ".jpg"));
-						if(roomImg == null) {
-							roomImg = ImageIO.read(new URL("http://hotelfinder.sc1samo7154.universe.wf/blurImage_563x373.jpeg"));
-						}
-					} catch (MalformedURLException e1) {
-						e1.printStackTrace();
-					} catch (IOException e1) {
-						e1.printStackTrace();
-					}
-					roomImage.setIcon(new ImageIcon(roomImg));
-					for (Hotel key : hotels.keySet()) {
-						hotelChoice.addItem(key.getName());
-						cpt++;
-					}
-					
-					String selectedHotel = (String)hotelChoice.getSelectedItem();
-					roomChoice.removeAllItems();
-					
-					for (Hotel key : hotels.keySet()) {
-						if(key.getName().equals(selectedHotel)) {
-							for(Room room : key.getRooms()) {
-								roomChoice.addItem(room);
+				if(!destinationInput.getText().equals("") && !bedNumbersInput.getText().equals("") && !maxPriceInput.getText().equals("") && !startDateInput.getText().equals("")
+						&& !endDateInput.getText().equals("")) 
+				{
+					HashMap<Hotel, Double> hotels = MainFunctions.research(agency, city, bedNumbers, startDate, endDate, minPrice, maxPrice, rating);
+					if(hotels.isEmpty()) {
+						JOptionPane.showMessageDialog(null, 
+		                        "Erreur, aucune correspondance", 
+		                        "Research Exception", 
+		                        JOptionPane.WARNING_MESSAGE);
+					} else {
+						hotelChoice.removeAllItems();
+						int cpt = 0;
+						Hotel firstImage = (Hotel) hotels.keySet().toArray()[0];
+						BufferedImage roomImg = null;
+						try {
+							roomImg = ImageIO.read(new URL(firstImage.getImageFolder() + "/" + "0" + ".jpg"));
+							if(roomImg == null) {
+								roomImg = ImageIO.read(new URL("http://hotelfinder.sc1samo7154.universe.wf/blurImage_563x373.jpeg"));
 							}
+						} catch (MalformedURLException e1) {
+							e1.printStackTrace();
+						} catch (IOException e1) {
+							e1.printStackTrace();
 						}
-					}
-					
-					hotelChoice.addActionListener (new ActionListener () {
-					    public void actionPerformed(ActionEvent e) {
-					    	String selectedHotel = (String)hotelChoice.getSelectedItem();
-					    	roomChoice.removeAllItems();
-							
-							for (Hotel key : hotels.keySet()) {
-								if(key.getName().equals(selectedHotel)) {
-									for(Room room : key.getRooms()) {
-										roomChoice.addItem(room);
-										BufferedImage roomImg = null;
-										try {
-											roomImg = ImageIO.read(new URL(key.getImageFolder() + "/" + "0" + ".jpg"));
-											if(roomImg == null) {
-												roomImg = ImageIO.read(new URL("http://hotelfinder.sc1samo7154.universe.wf/blurImage_563x373.jpeg"));
-											}
-										} catch (MalformedURLException e1) {
-											e1.printStackTrace();
-										} catch (IOException e1) {
-											e1.printStackTrace();
-										}
-										roomImage.setIcon(new ImageIcon(roomImg));
-									}
+						roomImage.setIcon(new ImageIcon(roomImg));
+						for (Hotel key : hotels.keySet()) {
+							hotelChoice.addItem(key.getName());
+							cpt++;
+						}
+						
+						String selectedHotel = (String)hotelChoice.getSelectedItem();
+						roomChoice.removeAllItems();
+						
+						for (Hotel key : hotels.keySet()) {
+							if(key.getName().equals(selectedHotel)) {
+								for(Room room : key.getRooms()) {
+									roomChoice.addItem(room);
 								}
 							}
-					    }
-					});
-					
-					roomChoice.addActionListener (new ActionListener () {
-					    public void actionPerformed(ActionEvent e) {
-							
-							String selectedHotel = (String)hotelChoice.getSelectedItem();
-							String selectedRoom = String.valueOf(roomChoice.getSelectedItem());
-							
-							String number = "0";
-							Matcher m = Pattern.compile("[^0-9]*([0-9]+).*").matcher(selectedRoom);
-							if (m.matches()) {
-							    number = m.group(1);
-							}
-							
-							for (Hotel key : hotels.keySet()) {
-								if(key.getName().equals(selectedHotel)) {
-									for(Room room : key.getRooms()) {
-										if(room.getRoomNumber() == (Integer.parseInt(number))) {
+						}
+						
+						hotelChoice.addActionListener (new ActionListener () {
+						    public void actionPerformed(ActionEvent e) {
+						    	String selectedHotel = (String)hotelChoice.getSelectedItem();
+						    	roomChoice.removeAllItems();
+								
+								for (Hotel key : hotels.keySet()) {
+									if(key.getName().equals(selectedHotel)) {
+										for(Room room : key.getRooms()) {
+											roomChoice.addItem(room);
 											BufferedImage roomImg = null;
 											try {
-												roomImg = ImageIO.read(new URL(key.getImageFolder() + "/" + String.valueOf(room.getRoomNumber()) + ".jpg"));
+												roomImg = ImageIO.read(new URL(key.getImageFolder() + "/" + "0" + ".jpg"));
 												if(roomImg == null) {
 													roomImg = ImageIO.read(new URL("http://hotelfinder.sc1samo7154.universe.wf/blurImage_563x373.jpeg"));
 												}
@@ -537,44 +512,81 @@ public class connectedUser extends JDialog {
 										}
 									}
 								}
-							}
-					    }
-					});
-					
-					
+						    }
+						});
+						
+						roomChoice.addActionListener (new ActionListener () {
+						    public void actionPerformed(ActionEvent e) {
 								
-					foundHotelInput.setText(String.valueOf(cpt));
-					
-					destinationInput.setVisible(false);
-					startDateInput.setVisible(false);
-					endDateInput.setVisible(false);
-					bedNumbersInput.setVisible(false);
-					minPriceInput.setVisible(false);
-					maxPriceInput.setVisible(false);
-					ratingInput.setVisible(false);
-					searchBtn.setVisible(false);
-					
-					destinationLabel.setVisible(false);
-					startDateLabel.setVisible(false);
-					endDateLabel.setVisible(false);
-					bedNumbersLabel.setVisible(false);
-					minPriceLabel.setVisible(false);
-					maxPriceLabel.setVisible(false);
-					ratingLabel.setVisible(false);
-					priceLabel.setVisible(false);
-					
-					foundHotelInput.setVisible(true);
-					foundHotelLabel.setVisible(true);
-					purchaseBtn.setVisible(true);
-					separator.setVisible(true);
-					hotelChoice.setVisible(true);
-					
-					roomInfosLabel.setVisible(true);
-					infosSeparator.setVisible(true);
-					roomImage.setVisible(true);
-					roomChoice.setVisible(true);
-					returnToSearch.setVisible(true);
-					hotelViewBtn.setVisible(true);
+								String selectedHotel = (String)hotelChoice.getSelectedItem();
+								String selectedRoom = String.valueOf(roomChoice.getSelectedItem());
+								
+								String number = "0";
+								Matcher m = Pattern.compile("[^0-9]*([0-9]+).*").matcher(selectedRoom);
+								if (m.matches()) {
+								    number = m.group(1);
+								}
+								
+								for (Hotel key : hotels.keySet()) {
+									if(key.getName().equals(selectedHotel)) {
+										for(Room room : key.getRooms()) {
+											if(room.getRoomNumber() == (Integer.parseInt(number))) {
+												BufferedImage roomImg = null;
+												try {
+													roomImg = ImageIO.read(new URL(key.getImageFolder() + "/" + String.valueOf(room.getRoomNumber()) + ".jpg"));
+													if(roomImg == null) {
+														roomImg = ImageIO.read(new URL("http://hotelfinder.sc1samo7154.universe.wf/blurImage_563x373.jpeg"));
+													}
+												} catch (MalformedURLException e1) {
+													e1.printStackTrace();
+												} catch (IOException e1) {
+													e1.printStackTrace();
+												}
+												roomImage.setIcon(new ImageIcon(roomImg));
+											}
+										}
+									}
+								}
+						    }
+						});
+						
+						
+									
+						foundHotelInput.setText(String.valueOf(cpt));
+						
+						destinationInput.setVisible(false);
+						startDateInput.setVisible(false);
+						endDateInput.setVisible(false);
+						bedNumbersInput.setVisible(false);
+						minPriceInput.setVisible(false);
+						maxPriceInput.setVisible(false);
+						ratingInput.setVisible(false);
+						searchBtn.setVisible(false);
+						
+						destinationLabel.setVisible(false);
+						startDateLabel.setVisible(false);
+						endDateLabel.setVisible(false);
+						bedNumbersLabel.setVisible(false);
+						minPriceLabel.setVisible(false);
+						maxPriceLabel.setVisible(false);
+						ratingLabel.setVisible(false);
+						priceLabel.setVisible(false);
+						
+						foundHotelInput.setVisible(true);
+						foundHotelLabel.setVisible(true);
+						purchaseBtn.setVisible(true);
+						separator.setVisible(true);
+						hotelChoice.setVisible(true);
+						
+						roomInfosLabel.setVisible(true);
+						infosSeparator.setVisible(true);
+						roomImage.setVisible(true);
+						roomChoice.setVisible(true);
+						returnToSearch.setVisible(true);
+						hotelViewBtn.setVisible(true);
+					}
+				} else {
+					searchMissingDisplay.setText("Missing important fields");
 				}
 			}
 		});
