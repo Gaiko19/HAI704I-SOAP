@@ -345,6 +345,9 @@ public class connectedUser extends JDialog {
 						purchasedRoomDisplay.setText(roomChoice.getSelectedItem().toString());
 						purchasedHotelDisplay.setText(selectedH.getName());
 						purchasedDateDisplay.setText("From : " + startDate + " to : " + endDate);
+						JOptionPane.showMessageDialog(null, 
+		                        "A PDF with your reservation have been sent to " + System.getProperty("user.dir") +"/Reservation.pdf", "PDF sent", 
+		                        JOptionPane.WARNING_MESSAGE);
 					} else {
 						JOptionPane.showMessageDialog(null, 
 		                        "Purchased failed, not enough balance", 

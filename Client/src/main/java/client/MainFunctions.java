@@ -1,6 +1,9 @@
 package client;
 
 import java.awt.Desktop;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.net.URI;
 import java.net.URL;
 import java.sql.Connection;
@@ -17,7 +20,15 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
+
+import javax.swing.JOptionPane;
+
+import com.itextpdf.text.Document;
+import com.itextpdf.text.pdf.PdfWriter;
+
 import java.util.Scanner;
+
+
 import exception.ReservationException;
 import webservice.Client;
 import webservice.CreditCard;
@@ -351,6 +362,7 @@ public class MainFunctions {
 							}
 							System.out.println("Your order have been placed. Thank you for your purchase !\n");
 							getRecipe(hotel, client, resa);
+							makePdf(agency, hotel, client, resa);
 						}
 						else {
 							System.err.println("Please verify your account balance.");
@@ -376,6 +388,7 @@ public class MainFunctions {
 				hotel.getResa().add(resa);
 				System.out.println("Your order have been placed. Thank you for your purchase !\n");
 				getRecipe(hotel, client, resa);
+				makePdf(agency, hotel, client, resa);
 				
 			}
 		}
@@ -432,6 +445,8 @@ public class MainFunctions {
 								preparedStmt = con.prepareStatement(
 										"UPDATE `CreditCard` SET `Amount` = '" + (client.getCc().getAmount()) + "' WHERE `CreditCard`.`ID` =" + clientID); // A FINIR
 								preparedStmt.execute();
+								
+								makePdf(agency, hotel, client, resa);
 							}
 							catch (Exception e) {
 								e.printStackTrace();
@@ -513,6 +528,20 @@ public class MainFunctions {
 		System.out.println(Reservation.adaptiveDisplay("dateout", String.valueOf(resa.getOut()), size));
 		System.out.println(Reservation.adaptiveDisplay("price", String.valueOf(Double.parseDouble(new DecimalFormat("##.##").format(resa.getRoom().getPrice())))+"€", size));
 		System.out.println(Reservation.formRecipe(size, "footer"));
+		System.out.println("A PDF have been sent to " + System.getProperty("user.dir") +"/Reservation.pdf");
+	}
+	
+	public static void makePdf(Agency agency, Hotel hotel, Client client, Reservation resa) {
+		try {
+            Document document = new Document();
+            PdfWriter.getInstance(document, new FileOutputStream(FirstPdf.FILE));
+            document.open();
+            FirstPdf.addMetaData(document);
+            FirstPdf.addTitlePage(document, agency, hotel, client, resa);
+            document.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 	}
 
 }
