@@ -174,6 +174,14 @@ public class Reservation {
 		this.cc = client.getCc();
 		this.room = room;
 	}
+	
+	public Reservation() {
+		this.client = null;
+		this.in = LocalDate.parse("2000-01-01");
+		this.out = LocalDate.parse("2000-01-01");
+		this.cc = new CreditCard();
+		this.room = new Room();
+	}
 	@Override
 	public String toString() {
 		return "Reservation : " + client.infoToString() + "room n°" + room.getRoomNumber() + "\n"+

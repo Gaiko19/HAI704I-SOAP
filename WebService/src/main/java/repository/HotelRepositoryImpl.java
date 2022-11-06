@@ -5,8 +5,10 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 
+import model.Client;
 import model.Hotel;
 import model.Position;
 import model.Reservation;
@@ -25,6 +27,8 @@ public class HotelRepositoryImpl implements HotelRepository {
 	String imageFolder = "";
 	Position adress = new Position();
 	ArrayList<Room> rooms = new ArrayList<>();
+	ArrayList<Reservation> resa = new ArrayList<>();
+	
 	try{  
 		Class.forName("com.mysql.jdbc.Driver");
 		Connection con=DriverManager.getConnection(
@@ -55,6 +59,16 @@ public class HotelRepositoryImpl implements HotelRepository {
 				rooms.add(room);
 		}
 		
+		rs = stmt.executeQuery("select * from Reservation where Hotel="+ id);
+		Client client = new Client();
+		while(rs.next()) {
+			LocalDate in = LocalDate.parse(rs.getString("DateIn"));
+			LocalDate out = LocalDate.parse(rs.getString("DateOut"));
+			Room room = new Room(rs.getInt("Room"), false, 0, 0);
+			Reservation reservation = new Reservation(client,in,out,room);
+			resa.add(reservation);
+		}
+		
 		
 		con.close();
 	}
@@ -68,7 +82,7 @@ public class HotelRepositoryImpl implements HotelRepository {
 			rooms,
 			adress, imageFolder);
 	
-	hotel.setResa(new ArrayList<Reservation>());
+	hotel.setResa(resa);
 	}
 	
 	@Override

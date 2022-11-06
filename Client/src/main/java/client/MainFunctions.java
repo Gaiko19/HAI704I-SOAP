@@ -291,8 +291,6 @@ public class MainFunctions {
 				if(!results.getRooms().isEmpty()) {
 					for (Room room : results.getRooms()) {
 						room.setPrice(room.getPrice() - (room.getPrice() / 100 ) * agency.getOffers().get(hotel));
-						/*double value = Double.parseDouble(new DecimalFormat("##.##").format(room.getPrice()));
-						room.setPrice(value);*/
 					}
 					hotels.put(results, prox.getValue());						
 				}
@@ -347,8 +345,8 @@ public class MainFunctions {
 								}
 
 								PreparedStatement preparedStmt = con.prepareStatement(
-										"INSERT INTO `Reservation` (`ID`, `Client`, `Room`, `DateIn`, `DateOut`, `Price`) "
-										+ "VALUES (NULL, " +clientID + ", '"+roomID+"', '"+ resa.getIn()+"', '"+ resa.getOut()+"', '"+ price +"')"
+										"INSERT INTO `Reservation` (`ID`, `Client`, `Room`, `DateIn`, `DateOut`, `Price`, `Hotel`) "
+										+ "VALUES (NULL, " +clientID + ", '"+roomID+"', '"+ resa.getIn()+"', '"+ resa.getOut()+"', '"+ price +"', " + hotelID + ")"
 										); // A FINIR
 								preparedStmt.execute();
 								
