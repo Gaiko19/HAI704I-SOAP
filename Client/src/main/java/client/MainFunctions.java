@@ -293,19 +293,25 @@ public class MainFunctions {
 				if((hotel.getHotel().getAddress().getCity().equals(location) || hotel.getHotel().getAddress().getCountry().equals(location))
 						&& hotel.getHotel().getStars() >= rating) {
 					Hotel results = agency.searchRoom(hotel, in, out, size, priceMin, priceMax);
-					ResultSet rs=stmt.executeQuery("select ID from Hotel where Name="+results.getName());
+					ResultSet rs=stmt.executeQuery("select ID from Hotel where Name='"+results.getName()+"'");
 					int id = 0;
 					if(rs.next()) {
 						id = rs.getInt("ID");
 					}
 					
 					rs=stmt.executeQuery("select * from Reservation where Hotel="+ id);
-					ArrayList<Integer> roomNums = new ArrayList<Integer>();
+					ArrayList<Integer> listID = new ArrayList<>();
 					while(rs.next()) {
-						ResultSet rs2=stmt.executeQuery("select * from Room where ID="+ rs.getInt("Room"));
+						listID.add(rs.getInt("Room"));
+					}
+					
+					ArrayList<Integer> roomNums = new ArrayList<Integer>();
+					for(int roomID : listID) {
+						ResultSet rs2=stmt.executeQuery("select * from Room where ID="+ roomID);
 						if(rs2.next()) {
 							roomNums.add(rs2.getInt("Number"));
 						}
+						rs2.close();
 					}
 					
 					ArrayList<Room> newRooms = new ArrayList<Room>();
@@ -384,7 +390,7 @@ public class MainFunctions {
 
 								PreparedStatement preparedStmt = con.prepareStatement(
 										"INSERT INTO `Reservation` (`ID`, `Client`, `Room`, `DateIn`, `DateOut`, `Price`, `Hotel`) "
-										+ "VALUES (NULL, " +clientID + ", '"+roomID+"', '"+ resa.getIn()+"', '"+ resa.getOut()+"', '"+ price +"', " + hotelID + ")"
+										+ "VALUES (NULL, '" +clientID + "', '"+roomID+"', '"+ resa.getIn()+"', '"+ resa.getOut()+"', '"+ price +"', '" + hotelID+ "')"
 										); // A FINIR
 								preparedStmt.execute();
 								
@@ -472,9 +478,9 @@ public class MainFunctions {
 								}
 
 								PreparedStatement preparedStmt = con.prepareStatement(
-										"INSERT INTO `Reservation` (`ID`, `Client`, `Room`, `DateIn`, `DateOut`, `Price`) "
-										+ "VALUES (NULL, " +clientID + ", '"+roomID+"', '"+ resa.getIn()+"', '"+ resa.getOut()+"', '"+ price +"')"
-										); // A FINIR
+										"INSERT INTO `Reservation` (`ID`, `Client`, `Room`, `DateIn`, `DateOut`, `Price`, `Hotel`) "
+										+ "VALUES (NULL, '" +clientID + "', '"+roomID+"', '"+ resa.getIn()+"', '"+ resa.getOut()+"', '"+ price +"', '" + hotelID+ "')"
+										); 
 								preparedStmt.execute();
 								
 								// Update solde client
