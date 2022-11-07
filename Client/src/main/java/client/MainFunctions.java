@@ -283,20 +283,62 @@ public class MainFunctions {
 	public static HashMap<Hotel, Double> research(Agency agency, String location, int size, String in, String out, int priceMin, int priceMax, double rating) {
 		HashMap<Hotel, Double> hotels = new HashMap<>();
 		HashMap<HotelService, Double> proxy = agency.getOffers();
-		for (Entry<HotelService, Double> prox : proxy.entrySet()) {
-			HotelService hotel = prox.getKey();
-			if((hotel.getHotel().getAddress().getCity().equals(location) || hotel.getHotel().getAddress().getCountry().equals(location))
-					&& hotel.getHotel().getStars() >= rating) {
-				Hotel results = agency.searchRoom(hotel, in, out, size, priceMin, priceMax);
-				if(!results.getRooms().isEmpty()) {
-					for (Room room : results.getRooms()) {
-						room.setPrice(room.getPrice() - (room.getPrice() / 100 ) * agency.getOffers().get(hotel));
-						/*double value = Double.parseDouble(new DecimalFormat("##.##").format(room.getPrice()));
-						room.setPrice(value);*/
+		try {  
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con=DriverManager.getConnection(
+					"jdbc:mysql://dakota.o2switch.net:3306/sc1samo7154_hotelfinderdb","sc1samo7154_hotelviewer","hotelfinderviewer");
+			Statement stmt=con.createStatement();
+			for (Entry<HotelService, Double> prox : proxy.entrySet()) {
+				HotelService hotel = prox.getKey();
+				if((hotel.getHotel().getAddress().getCity().equals(location) || hotel.getHotel().getAddress().getCountry().equals(location))
+						&& hotel.getHotel().getStars() >= rating) {
+					Hotel results = agency.searchRoom(hotel, in, out, size, priceMin, priceMax);
+					ResultSet rs=stmt.executeQuery("select ID from Hotel where Name='"+results.getName()+"'");
+					int id = 0;
+					if(rs.next()) {
+						id = rs.getInt("ID");
 					}
-					hotels.put(results, prox.getValue());						
+					
+					rs=stmt.executeQuery("select * from Reservation where Hotel="+ id);
+					ArrayList<Integer> listID = new ArrayList<>();
+					while(rs.next()) {
+						listID.add(rs.getInt("Room"));
+					}
+					
+					ArrayList<Integer> roomNums = new ArrayList<Integer>();
+					for(int roomID : listID) {
+						ResultSet rs2=stmt.executeQuery("select * from Room where ID="+ roomID);
+						if(rs2.next()) {
+							roomNums.add(rs2.getInt("Number"));
+						}
+						rs2.close();
+					}
+					
+					ArrayList<Room> newRooms = new ArrayList<Room>();
+					for(Room room : results.getRooms()) {
+						boolean check = true;
+						for(int roomNum : roomNums) {
+							if(room.getRoomNumber() == roomNum) {
+								check = false;
+							}
+						}
+						if(check) {
+							newRooms.add(room);
+						}
+					}
+					
+					if(!newRooms.isEmpty()) {
+						for (Room room : newRooms) {
+							room.setPrice(room.getPrice() - (room.getPrice() / 100 ) * agency.getOffers().get(hotel));
+						}
+						results.setRoom(newRooms);
+						hotels.put(results, prox.getValue());						
+					}
 				}
 			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
 		}
 		return hotels;
 	}
@@ -347,8 +389,8 @@ public class MainFunctions {
 								}
 
 								PreparedStatement preparedStmt = con.prepareStatement(
-										"INSERT INTO `Reservation` (`ID`, `Client`, `Room`, `DateIn`, `DateOut`, `Price`) "
-										+ "VALUES (NULL, " +clientID + ", '"+roomID+"', '"+ resa.getIn()+"', '"+ resa.getOut()+"', '"+ price +"')"
+										"INSERT INTO `Reservation` (`ID`, `Client`, `Room`, `DateIn`, `DateOut`, `Price`, `Hotel`) "
+										+ "VALUES (NULL, '" +clientID + "', '"+roomID+"', '"+ resa.getIn()+"', '"+ resa.getOut()+"', '"+ price +"', '" + hotelID+ "')"
 										); // A FINIR
 								preparedStmt.execute();
 								
@@ -436,9 +478,9 @@ public class MainFunctions {
 								}
 
 								PreparedStatement preparedStmt = con.prepareStatement(
-										"INSERT INTO `Reservation` (`ID`, `Client`, `Room`, `DateIn`, `DateOut`, `Price`) "
-										+ "VALUES (NULL, " +clientID + ", '"+roomID+"', '"+ resa.getIn()+"', '"+ resa.getOut()+"', '"+ price +"')"
-										); // A FINIR
+										"INSERT INTO `Reservation` (`ID`, `Client`, `Room`, `DateIn`, `DateOut`, `Price`, `Hotel`) "
+										+ "VALUES (NULL, '" +clientID + "', '"+roomID+"', '"+ resa.getIn()+"', '"+ resa.getOut()+"', '"+ price +"', '" + hotelID+ "')"
+										); 
 								preparedStmt.execute();
 								
 								// Update solde client

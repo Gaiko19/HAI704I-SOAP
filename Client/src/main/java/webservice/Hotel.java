@@ -101,6 +101,19 @@ public class Hotel {
     public void setName(String value) {
         this.name = value;
     }
+    
+    
+    /**
+     * Sets the value of the name property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Room }
+     *     
+     */
+    public void setRoom(ArrayList<Room> value) {
+        this.rooms = value;
+    }
 
     /**
      * Gets the value of the resa property.
