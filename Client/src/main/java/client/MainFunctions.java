@@ -1,9 +1,7 @@
 package client;
 
 import java.awt.Desktop;
-import java.io.File;
 import java.io.FileOutputStream;
-import java.io.OutputStream;
 import java.net.URI;
 import java.net.URL;
 import java.sql.Connection;
@@ -13,21 +11,13 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map.Entry;
-
-import javax.swing.JOptionPane;
+import java.util.Scanner;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.pdf.PdfWriter;
-
-import java.util.Scanner;
-
 
 import exception.ReservationException;
 import webservice.Client;
@@ -396,7 +386,7 @@ public class MainFunctions {
 								
 								// Update solde client
 								preparedStmt = con.prepareStatement(
-										"UPDATE `CreditCard` SET `Amount` = '" + (client.getCc().getAmount()) + "' WHERE `CreditCard`.`ID` =" + clientID); // A FINIR
+										"UPDATE `CreditCard` SET `Amount` = '" + (client.getCc().getAmount()) + "' WHERE `CreditCard`.`Client` =" + clientID); // A FINIR
 								preparedStmt.execute();
 							}
 							catch (Exception e) {
@@ -485,7 +475,7 @@ public class MainFunctions {
 								
 								// Update solde client
 								preparedStmt = con.prepareStatement(
-										"UPDATE `CreditCard` SET `Amount` = '" + (client.getCc().getAmount()) + "' WHERE `CreditCard`.`ID` =" + clientID); // A FINIR
+										"UPDATE `CreditCard` SET `Amount` = '" + (client.getCc().getAmount()) + "' WHERE `CreditCard`.`Client` =" + clientID); // A FINIR
 								preparedStmt.execute();
 								
 								makePdf(agency, hotel, client, resa);

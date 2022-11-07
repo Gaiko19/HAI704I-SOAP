@@ -424,7 +424,7 @@ public class connectedUser extends JDialog {
 				}
 				int maxPrice = Integer.valueOf(maxPriceInput.getText());
 				Double rating;
-				if(minPriceInput.getText().length() != 0) {
+				if(ratingInput.getText().length() != 0) {
 					rating = Double.valueOf(ratingInput.getText());
 				} else {
 					rating = 0.0;
