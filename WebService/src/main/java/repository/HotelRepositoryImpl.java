@@ -59,15 +59,15 @@ public class HotelRepositoryImpl implements HotelRepository {
 				rooms.add(room);
 		}
 		
-		rs = stmt.executeQuery("select * from Reservation where Hotel="+ id);
-		Client client = new Client();
-		while(rs.next()) {
-			LocalDate in = LocalDate.parse(rs.getString("DateIn"));
-			LocalDate out = LocalDate.parse(rs.getString("DateOut"));
-			Room room = new Room(rs.getInt("Room"), false, 0, 0);
-			Reservation reservation = new Reservation(client,in,out,room);
-			resa.add(reservation);
-		}
+//		rs = stmt.executeQuery("select * from Reservation where Hotel="+ id);
+//		Client client = new Client();
+//		while(rs.next()) {
+//			LocalDate in = LocalDate.parse(rs.getString("DateIn"));
+//			LocalDate out = LocalDate.parse(rs.getString("DateOut"));
+//			Room room = new Room(rs.getInt("Room"), false, 0, 0);
+//			Reservation reservation = new Reservation(client,in,out,room);
+//			resa.add(reservation);
+//		}
 		
 		
 		con.close();
