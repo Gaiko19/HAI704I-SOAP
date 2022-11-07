@@ -72,6 +72,7 @@ public class Hotel {
 		this.resa = new ArrayList<Reservation>();
 		this.imageFolder = imageFolder;
 	}
+	
 	public Hotel() {
 		this.name = "Undefined";
 		this.stars = 0;
